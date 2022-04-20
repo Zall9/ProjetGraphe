@@ -3,7 +3,8 @@ package com.graphe;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -98,13 +99,19 @@ public class Graphe {
         }
         return graph;
     }
+
+    public void comboBoxitemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            String selectedItem = (String) e.getItem();
+        }
+    }
     public static void main(String[] args) {
         System.setProperty("org.graphstream.ui", "swing");
         JFrame maFenetre = new JFrame("Graphe");
         JPanel pa = new JPanel();
         String s1[]={"Attribut","Concept","Attribut"};
         JComboBox<String> combo = new JComboBox<String>(s1);
-        
+        String mavar="";
         Graphe g = new Graphe();
 
         // ask user to input
@@ -139,20 +146,12 @@ public class Graphe {
         Viewer viewer = new SwingViewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
         DefaultView view = (DefaultView) viewer.addDefaultView(false);   // false indicates "no JFrame".
-        
-
-
 
         // Création des boutons
         JPanel panel = new JPanel();
         
         // Choix création noeud
         JPanel panelChoixCreerNoeud = new JPanel();
-
-        
-
-
-        
         BoxLayout box=new BoxLayout(panel,BoxLayout.Y_AXIS);
         panel.setLayout(box);
         JButton bouton1 = new JButton("Afficher");
@@ -163,11 +162,37 @@ public class Graphe {
         bouton3.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton bouton4 = new JButton("Quitter");
         bouton4.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //listener sur la box
+        
+    //     combo.addItemListener(new ItemListener()
+    // {
+    //     @Override
+    //     public void itemStateChanged(ItemEvent e)
+    //     {
+    //         if(e.getID() == ItemEvent.ITEM_STATE_CHANGED)
+    //         {
+    //             if(e.getStateChange() == ItemEvent.SELECTED)
+    //             {
+    //                 JComboBox<String> cb = (JComboBox<String>) e.getSource();
+    //                 String newSelection = (String) cb.getSelectedItem();
+    //                 System.out.println("newSelection: " + newSelection);
+    //             }
+    //         }
+    //     }
+    // });
+        combo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                JComboBox<String> cb = (JComboBox<String>) e.getSource(); 
+                System.out.println(cb.getSelectedItem() + "");
+                
+            }
+        });
         //Création des réactions pour les bouttons
         bouton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                System.out.println("Ici !");
             }
         });
         bouton2.addActionListener(new ActionListener() {
@@ -197,15 +222,12 @@ public class Graphe {
         panel.add(bouton2);
         panel.add(bouton3);
         panel.add(bouton4);
-
-
         // Création de la fenetre et ajout des composants:
         maFenetre.setSize(800, 600);
         maFenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         maFenetre.setLocationRelativeTo(null);
         maFenetre.add(panel, BorderLayout.EAST);
-        maFenetre.add(view, BorderLayout.CENTER);
-        
+        maFenetre.add(view, BorderLayout.CENTER);  
         maFenetre.setVisible(true);
 
     }
