@@ -4,20 +4,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+
+import org.graphstream.graph.Graph;
 
 public class ChoixTypeConceptActionListener implements ActionListener {
 
     private JComboBox<String> combo;
     private JPanel panelChoixCreerNoeudConteneur;
-    private JPanel panelChoixCreerNoeudCourant;
+    private JPanelAvecTypeNoeud panelChoixCreerNoeudCourant;
+    private JButton boutonCreerNoeud;
+    private Graph graph;
+    private Graphe g;
 
     public ChoixTypeConceptActionListener(JComboBox combo, JPanel panelChoixCreerNoeudConteneur,
-            JPanel panelChoixCreerNoeudCourant) {
+            JPanelAvecTypeNoeud panelChoixCreerNoeudCourant, JButton boutonCreerNoeud, Graph graph, Graphe g) {
         this.combo = combo;
         this.panelChoixCreerNoeudConteneur = panelChoixCreerNoeudConteneur;
         this.panelChoixCreerNoeudCourant = panelChoixCreerNoeudCourant;
+        this.boutonCreerNoeud = boutonCreerNoeud;
+        this.graph = graph;
+        this.g = g;
     }
 
     @Override
@@ -32,32 +41,25 @@ public class ChoixTypeConceptActionListener implements ActionListener {
         switch (typeNoeud) {
             case "Concept":
                 panelChoixCreerNoeudCourant = new JPanelConcept();
-                panelChoixCreerNoeudConteneur.removeAll();
-                panelChoixCreerNoeudConteneur.add(panelChoixCreerNoeudCourant);
-                panelChoixCreerNoeudConteneur.revalidate();
-                panelChoixCreerNoeudConteneur.repaint();
                 break;
             case "Instance":
-                // TODO: Créer JPanelInstance
-                panelChoixCreerNoeudCourant = new JPanel();
-                panelChoixCreerNoeudCourant.setBackground(Color.red);
-                panelChoixCreerNoeudConteneur.removeAll();
-                panelChoixCreerNoeudConteneur.add(panelChoixCreerNoeudCourant);
-                panelChoixCreerNoeudConteneur.revalidate();
-                panelChoixCreerNoeudConteneur.repaint();
+                panelChoixCreerNoeudCourant = new JPanelInstance();
                 break;
             case "Attribut":
-                // TODO: Créer JPanelAttribut
-                panelChoixCreerNoeudCourant = new JPanel();
-                panelChoixCreerNoeudCourant.setBackground(Color.green);
-                panelChoixCreerNoeudConteneur.removeAll();
-                panelChoixCreerNoeudConteneur.add(panelChoixCreerNoeudCourant);
-                panelChoixCreerNoeudConteneur.revalidate();
-                panelChoixCreerNoeudConteneur.repaint();
-
+                panelChoixCreerNoeudCourant = new JPanelAttribut();
             default:
                 break;
         }
+        panelChoixCreerNoeudConteneur.removeAll();
+        panelChoixCreerNoeudConteneur.add(panelChoixCreerNoeudCourant);
+        panelChoixCreerNoeudConteneur.revalidate();
+        panelChoixCreerNoeudConteneur.repaint();
+        panelChoixCreerNoeudConteneur.setMaximumSize(panelChoixCreerNoeudConteneur.getPreferredSize());
+
+        for (ActionListener al : boutonCreerNoeud.getActionListeners()) {
+            boutonCreerNoeud.removeActionListener(al);
+        }
+        boutonCreerNoeud.addActionListener(new CreerNoeudActionListener(panelChoixCreerNoeudCourant, g, graph));
     }
 
 }

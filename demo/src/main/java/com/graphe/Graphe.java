@@ -71,7 +71,7 @@ public class Graphe {
      * 
      * @param n the node to add
      */
-    private void ajouterNoeud(Noeud n) {
+    public void ajouterNoeud(Noeud n) {
         noeuds.add(n);
     }
 
@@ -168,9 +168,11 @@ public class Graphe {
         // Choix création noeud
         JPanel panelChoixCreerNoeudConteneur = new JPanel();
         // Au départ on est sur concept
-        JPanel panelChoixCreerNoeudCourant = new JPanelConcept();
+        JPanelAvecTypeNoeud panelChoixCreerNoeudCourant = new JPanelConcept();
         BoxLayout box = new BoxLayout(panel, BoxLayout.Y_AXIS);
         panel.setLayout(box);
+        JButton boutonCreerNoeud = new JButton("Créer un noeud");
+        boutonCreerNoeud.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton bouton1 = new JButton("Afficher");
         bouton1.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton bouton2 = new JButton("Sauvegarder");
@@ -182,9 +184,12 @@ public class Graphe {
 
         System.out.println(combo.getSelectedItem() + "");
         // listener sur la box
-        combo.addActionListener(
-                new ChoixTypeConceptActionListener(combo, panelChoixCreerNoeudConteneur, panelChoixCreerNoeudCourant));
+        combo.addActionListener(new ChoixTypeConceptActionListener(combo, panelChoixCreerNoeudConteneur,
+                panelChoixCreerNoeudCourant, boutonCreerNoeud, graph, g));
+
         // Création des réactions pour les bouttons
+        boutonCreerNoeud.addActionListener(new CreerNoeudActionListener(panelChoixCreerNoeudCourant, g, graph));
+
         bouton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -216,7 +221,9 @@ public class Graphe {
         // Ajout des boutons au panel principal
         combo.setMaximumSize(combo.getPreferredSize());
         panel.add(combo);
+        panelChoixCreerNoeudConteneur.setMaximumSize(panelChoixCreerNoeudConteneur.getPreferredSize());
         panel.add(panelChoixCreerNoeudConteneur);
+        panel.add(boutonCreerNoeud);
         panel.add(bouton1);
         panel.add(bouton2);
         panel.add(bouton3);

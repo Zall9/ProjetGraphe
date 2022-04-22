@@ -6,20 +6,21 @@ import java.awt.event.ActionListener;
 import java.awt.*;
 import javax.swing.*;
 
-class JPanelAttribut extends JPanel {
+class JPanelAttribut extends JPanelAvecTypeNoeud {
 
     private JLabel attributLabel;
     private JTextField textfieldInput;
+
     public JPanelAttribut() {
         super();
+        setTypeNoeud("Attribut");
         GridLayout grid = new GridLayout(0, 2);
         setLayout(grid);
-        //JTextField textfieldInput= new JTextField("Entrez la valeur de l'attribut");
+        textfieldInput = new JTextField("");
         textfieldInput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JTextField tf = (JTextField) e.getSource();
-                System.out.println(tf.getText());
+                System.out.println(textfieldInput.getText());
             }
         });
 
@@ -29,6 +30,10 @@ class JPanelAttribut extends JPanel {
         // Ajout des composants au panel
         this.add(attributLabel);
         this.add(textfieldInput);
+    }
+
+    public String getValAttribut() {
+        return textfieldInput.getText();
     }
 
 }
