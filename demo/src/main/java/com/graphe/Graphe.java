@@ -59,7 +59,7 @@ public class Graphe {
      * 
      * @return The list of nodes.
      */
-    private List<Noeud> getGraphe() {
+    public List<Noeud> getGraphe() {
         return this.noeuds;
     }
 
@@ -123,10 +123,8 @@ public class Graphe {
     public static void main(String[] args) {
         System.setProperty("org.graphstream.ui", "swing");
         JFrame maFenetre = new JFrame("Graphe");
-        JPanel pa = new JPanel();
         String s1[] = { "Concept", "Instance", "Attribut" };
         JComboBox<String> combo = new JComboBox<String>(s1);
-        String mavar = "";
         Graphe g = new Graphe();
 
         // ask user to input
@@ -176,6 +174,7 @@ public class Graphe {
         JLabel labelAjoutRelation = new JLabel("Ajouter une relation");
         JPanel panel = new JPanel();
         
+        JPanelRelation panelRelation = new JPanelRelation(g);
         // Choix création noeud
         JPanel panelChoixCreerNoeudConteneur = new JPanel();
         // Au départ on est sur concept
@@ -231,12 +230,15 @@ public class Graphe {
 
         // Ajout des boutons au panel principal
         combo.setMaximumSize(combo.getPreferredSize());
+        //ajout noeuds
         panel.add(labelAjoutNoeud);
         panel.add(combo);
         panelChoixCreerNoeudConteneur.setMaximumSize(panelChoixCreerNoeudConteneur.getPreferredSize());
         panel.add(panelChoixCreerNoeudConteneur);
         panel.add(boutonCreerNoeud);
+        //relations
         panel.add(labelAjoutRelation);
+        panel.add(panelRelation);
         panel.add(bouton1);
         panel.add(bouton2);
         panel.add(bouton3);
