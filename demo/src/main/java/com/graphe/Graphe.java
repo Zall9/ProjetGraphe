@@ -14,6 +14,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import java.awt.*;
@@ -129,7 +130,7 @@ public class Graphe {
         AttributNoeud attributNom = new AttributNoeud("Alice");
         // ConceptNoeud cN2 = new ConceptNoeud(TypeConcept.ex, "Pronom");
         AttributNoeud attributPronom = new AttributNoeud("Iel");
-
+        
         // todo RECUPERER LA RELATION ET FAIRE RELATION.TOSTRING
         Relation rInstanceN1 = new Relation(TypeRelation.rdf, "type", instanceAlice, cN1);
         Relation rAttributN2 = new Relation(TypeRelation.foaf, "age", instanceAlice, attributAge);
@@ -157,14 +158,16 @@ public class Graphe {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-
+        
         Viewer viewer = new SwingViewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
         DefaultView view = (DefaultView) viewer.addDefaultView(false); // false indicates "no JFrame".
-
+        
         // Création des boutons
+        JLabel labelAjoutNoeud = new JLabel("Ajouter un noeud");
+        JLabel labelAjoutRelation = new JLabel("Ajouter une relation");
         JPanel panel = new JPanel();
-
+        
         // Choix création noeud
         JPanel panelChoixCreerNoeudConteneur = new JPanel();
         // Au départ on est sur concept
@@ -220,10 +223,12 @@ public class Graphe {
 
         // Ajout des boutons au panel principal
         combo.setMaximumSize(combo.getPreferredSize());
+        panel.add(labelAjoutNoeud);
         panel.add(combo);
         panelChoixCreerNoeudConteneur.setMaximumSize(panelChoixCreerNoeudConteneur.getPreferredSize());
         panel.add(panelChoixCreerNoeudConteneur);
         panel.add(boutonCreerNoeud);
+        panel.add(labelAjoutRelation);
         panel.add(bouton1);
         panel.add(bouton2);
         panel.add(bouton3);
