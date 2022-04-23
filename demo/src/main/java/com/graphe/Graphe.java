@@ -88,7 +88,7 @@ public class Graphe {
      * 
      * @return A graph object
      */
-    private Graph convertToVisualGraph() throws ElementNotFoundException {
+    Graph convertToVisualGraph() throws ElementNotFoundException {
         List<Relation> relsCourant;
         int cpt;
         Graph graph = new SingleGraph("Graphe");
@@ -174,7 +174,6 @@ public class Graphe {
         JLabel labelAjoutRelation = new JLabel("Ajouter une relation");
         JPanel panel = new JPanel();
         
-        JPanelRelation panelRelation = new JPanelRelation(g);
         // Choix création noeud
         JPanel panelChoixCreerNoeudConteneur = new JPanel();
         // Au départ on est sur concept
@@ -183,8 +182,9 @@ public class Graphe {
         panel.setLayout(box);
         JButton boutonCreerNoeud = new JButton("Créer un noeud");
         boutonCreerNoeud.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JButton bouton1 = new JButton("Afficher");
-        bouton1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JButton boutonCreerRelation = new JButton("Afficher");
+        boutonCreerRelation.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanelRelation panelRelation = new JPanelRelation(g,boutonCreerRelation);
         JButton bouton2 = new JButton("Sauvegarder");
         bouton2.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton bouton3 = new JButton("Charger");
@@ -200,7 +200,7 @@ public class Graphe {
         // Création des réactions pour les bouttons
         boutonCreerNoeud.addActionListener(new CreerNoeudActionListener(panelChoixCreerNoeudCourant, g, graph));
 
-        bouton1.addActionListener(new ActionListener() {
+        boutonCreerRelation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Ici !");
@@ -239,7 +239,7 @@ public class Graphe {
         //relations
         panel.add(labelAjoutRelation);
         panel.add(panelRelation);
-        panel.add(bouton1);
+        panel.add(boutonCreerRelation);
         panel.add(bouton2);
         panel.add(bouton3);
         panel.add(bouton4);

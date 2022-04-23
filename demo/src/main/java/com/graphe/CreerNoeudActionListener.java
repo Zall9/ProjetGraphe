@@ -3,8 +3,6 @@ package com.graphe;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JPanel;
-
 import org.graphstream.graph.Graph;
 
 public class CreerNoeudActionListener implements ActionListener {
