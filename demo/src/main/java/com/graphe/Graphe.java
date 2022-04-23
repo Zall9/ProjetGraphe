@@ -4,14 +4,8 @@ package com.graphe;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
-import java.io.*;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -154,9 +148,9 @@ public class Graphe {
         g.afficheGraphe();
         System.setProperty("org.graphstream.ui", "swing");
         Graph graph = g.convertToVisualGraph();
-
+        // graph = g.rechercheInstancesDeConcept("Person",
+        // false).convertToVisualGraph();
         Path filePath = Paths.get("demo/src/main/java/com/graphe/vue", "style.css");
-
         try {
             List<String> contentArray = Files.readAllLines(filePath);
             String content = String.join("\n", contentArray);
@@ -164,7 +158,6 @@ public class Graphe {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-
         Viewer viewer = new SwingViewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
         DefaultView view = (DefaultView) viewer.addDefaultView(false); // false indicates "no JFrame".
@@ -254,6 +247,66 @@ public class Graphe {
         maFenetre.add(view, BorderLayout.CENTER);
         maFenetre.setVisible(true);
 
+        // TESTS
+        System.out.println("-----------------TESTS---------------------");
+        Graphe g2 = g.rechercheInstancesDeConcept("Person", false);
+        System.out.println(g2);
     }
 
+    /**
+     * renvoie un graphe contenant toutes les instances d'un concept donné
+     * 
+     * @param g          le graphique à rechercher
+     * @param nomConcept le nom du concept que vous souhaitez rechercher
+     * @return Un graphe contenant toutes les instances d'un concept.
+     */
+    public Graphe rechercheInstancesDeConcept(String nomConcept, boolean afficherAttributsInstances) {
+        Graphe gRecherche = new Graphe();
+        for (Noeud n : this.getGraphe()) {
+            System.out.println(
+                    "n : " + n + "  n.getTypeNoeud().equals('Instance') : " + n.getTypeNoeud().equals("Instance"));
+            if (n.getTypeNoeud().equals("Instance")) {
+                for (Noeud nRelie : n.getNoeudsRelie()) {
+                    System.out.println("nrelie : " + nRelie +
+                            "   nRelie.getTypeNoeud().equals(Concept) : " + nRelie.getTypeNoeud().equals("Concept"));
+                    if (nRelie.getTypeNoeud().equals("Concept")) {
+                        ConceptNoeud nc = (ConceptNoeud) nRelie;
+                        System.out.println(
+                                "nc.getTypeNoeud().equals(nomConcept : " + nc.getTypeNoeud().equals(nomConcept));
+                        System.out.println("nc vaut: " + nc.getNomConcept());
+                        if (nc.getNomConcept().equals(nomConcept)) {
+                            gRecherche.ajouterNoeud(nc);
+                            gRecherche.ajouterNoeud(n);
+                        }
+                    }
+                }
+            }
+        }
+        return gRecherche;
+    }
+
+    /**
+     * renvoie la relation entre deux nœuds
+     * 
+     * @param n1 le premier nœud
+     * @param n2 le nœud que nous voulons atteindre
+     * @return La relation entre deux nœuds.
+     */
+    public Relation getRelationEntreNoeuds(Noeud n1, Noeud n2) {
+        for (Relation r : n1.getRelations()) {
+            if (r.getNoeudArrive().equals(n2)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        String s = "";
+        for (Noeud n : this.getGraphe()) {
+            s += n.toString() + "\n";
+        }
+        return s;
+    }
 }

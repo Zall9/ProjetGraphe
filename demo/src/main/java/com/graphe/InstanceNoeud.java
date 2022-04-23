@@ -7,7 +7,8 @@ public class InstanceNoeud extends Noeud {
 
     public InstanceNoeud(String nomInstance) {
         this.nomInstance = nomInstance;
-        setId(UUID.randomUUID().toString()); 
+        setId(UUID.randomUUID().toString());
+        setTypeNoeud("Instance");
     }
 
     @Override
