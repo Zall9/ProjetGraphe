@@ -134,7 +134,7 @@ public class Graphe {
         AttributNoeud attributNom = new AttributNoeud("Alice");
         // ConceptNoeud cN2 = new ConceptNoeud(TypeConcept.ex, "Pronom");
         AttributNoeud attributPronom = new AttributNoeud("Iel");
-        
+
         // todo RECUPERER LA RELATION ET FAIRE RELATION.TOSTRING
         Relation rInstanceN1 = new Relation(TypeRelation.rdf, "type", instanceAlice, cN1);
         Relation rAttributN2 = new Relation(TypeRelation.foaf, "age", instanceAlice, attributAge);
@@ -156,24 +156,24 @@ public class Graphe {
         Graph graph = g.convertToVisualGraph();
 
         Path filePath = Paths.get("demo/src/main/java/com/graphe/vue", "style.css");
-        
+
         try {
-            List<String>contentArray = Files.readAllLines(filePath);
+            List<String> contentArray = Files.readAllLines(filePath);
             String content = String.join("\n", contentArray);
             graph.setAttribute("ui.stylesheet", content);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        
+
         Viewer viewer = new SwingViewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
         DefaultView view = (DefaultView) viewer.addDefaultView(false); // false indicates "no JFrame".
-        
+
         // Création des boutons
         JLabel labelAjoutNoeud = new JLabel("Ajouter un noeud");
         JLabel labelAjoutRelation = new JLabel("Ajouter une relation");
         JPanel panel = new JPanel();
-        
+
         // Choix création noeud
         JPanel panelChoixCreerNoeudConteneur = new JPanel();
         // Au départ on est sur concept
@@ -182,9 +182,9 @@ public class Graphe {
         panel.setLayout(box);
         JButton boutonCreerNoeud = new JButton("Créer un noeud");
         boutonCreerNoeud.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JButton boutonCreerRelation = new JButton("Afficher");
+        JButton boutonCreerRelation = new JButton("Creer la relation entre les deux noeuds");
         boutonCreerRelation.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JPanelRelation panelRelation = new JPanelRelation(g,boutonCreerRelation);
+        JPanelRelation panelRelation = new JPanelRelation(g, graph, boutonCreerRelation);
         JButton bouton2 = new JButton("Sauvegarder");
         bouton2.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton bouton3 = new JButton("Charger");
@@ -195,10 +195,11 @@ public class Graphe {
         System.out.println(combo.getSelectedItem() + "");
         // listener sur la box
         combo.addActionListener(new ChoixTypeConceptActionListener(combo, panelChoixCreerNoeudConteneur,
-                panelChoixCreerNoeudCourant, boutonCreerNoeud, graph, g));
+                panelChoixCreerNoeudCourant, boutonCreerNoeud, graph, g, panelRelation));
 
         // Création des réactions pour les bouttons
-        boutonCreerNoeud.addActionListener(new CreerNoeudActionListener(panelChoixCreerNoeudCourant, g, graph));
+        boutonCreerNoeud
+                .addActionListener(new CreerNoeudActionListener(panelChoixCreerNoeudCourant, g, graph, panelRelation));
 
         boutonCreerRelation.addActionListener(new ActionListener() {
             @Override
@@ -225,18 +226,20 @@ public class Graphe {
             }
         });
 
+        panelRelation.setMaximumSize(panelRelation.getPreferredSize());
+
         // Ajouts au panelChoixCreerNoeud
         panelChoixCreerNoeudConteneur.add(panelChoixCreerNoeudCourant);
 
         // Ajout des boutons au panel principal
         combo.setMaximumSize(combo.getPreferredSize());
-        //ajout noeuds
+        // ajout noeuds
         panel.add(labelAjoutNoeud);
         panel.add(combo);
         panelChoixCreerNoeudConteneur.setMaximumSize(panelChoixCreerNoeudConteneur.getPreferredSize());
         panel.add(panelChoixCreerNoeudConteneur);
         panel.add(boutonCreerNoeud);
-        //relations
+        // relations
         panel.add(labelAjoutRelation);
         panel.add(panelRelation);
         panel.add(boutonCreerRelation);
@@ -244,7 +247,7 @@ public class Graphe {
         panel.add(bouton3);
         panel.add(bouton4);
         // Création de la fenetre et ajout des composants:
-        maFenetre.setSize(800, 600);
+        maFenetre.setSize(1920, 1080);
         maFenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         maFenetre.setLocationRelativeTo(null);
         maFenetre.add(panel, BorderLayout.EAST);

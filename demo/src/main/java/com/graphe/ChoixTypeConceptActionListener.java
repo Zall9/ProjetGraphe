@@ -1,4 +1,5 @@
 package com.graphe;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -14,14 +15,18 @@ public class ChoixTypeConceptActionListener implements ActionListener {
     private JButton boutonCreerNoeud;
     private Graph graph;
     private Graphe g;
+    private JPanelRelation panelRelation;
+
     public ChoixTypeConceptActionListener(JComboBox combo, JPanel panelChoixCreerNoeudConteneur,
-            JPanelAvecTypeNoeud panelChoixCreerNoeudCourant, JButton boutonCreerNoeud, Graph graph, Graphe g) {
+            JPanelAvecTypeNoeud panelChoixCreerNoeudCourant, JButton boutonCreerNoeud, Graph graph, Graphe g,
+            JPanelRelation panelRelation) {
         this.combo = combo;
         this.panelChoixCreerNoeudConteneur = panelChoixCreerNoeudConteneur;
         this.panelChoixCreerNoeudCourant = panelChoixCreerNoeudCourant;
         this.boutonCreerNoeud = boutonCreerNoeud;
         this.graph = graph;
         this.g = g;
+        this.panelRelation = panelRelation;
     }
 
     @Override
@@ -54,7 +59,8 @@ public class ChoixTypeConceptActionListener implements ActionListener {
         for (ActionListener al : boutonCreerNoeud.getActionListeners()) {
             boutonCreerNoeud.removeActionListener(al);
         }
-        boutonCreerNoeud.addActionListener(new CreerNoeudActionListener(panelChoixCreerNoeudCourant, g, graph));
+        boutonCreerNoeud
+                .addActionListener(new CreerNoeudActionListener(panelChoixCreerNoeudCourant, g, graph, panelRelation));
     }
 
 }

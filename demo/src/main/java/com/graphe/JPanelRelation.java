@@ -4,35 +4,36 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.graphstream.graph.Graph;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-//import org.graphstream.graph.Graph;
-public class JPanelRelation extends JPanel{
-    //private Graph graphVisuel;
+
+public class JPanelRelation extends JPanel {
+    // private Graph graphVisuel;
     private Graphe grapheLogique;
-    private JComboBox<String> comboNoeudGauche;
-    private JComboBox<String> comboNoeudDroit;
-    private JComboBox<String> comboRelation;
-    private JPanel panelRelation;
-    private JButton button;
-    private JButton buttonRefresh;
-    JPanelRelation(Graphe grapheLogique, JButton button){
+    private Graph grapheVisuel;
+    private JComboBox<Noeud> comboNoeudGauche;
+    private JComboBox<Noeud> comboNoeudDroit;
+    private JComboBox<TypeRelation> comboRelation;
+    private JButton boutonCreerRelation;
+    private HintTextField textFieldNomRelation;
+
+    JPanelRelation(Graphe grapheLogique, Graph grapheVisuel, JButton boutonCreerRelation) {
         super();
-        this.button = button;
+        this.boutonCreerRelation = boutonCreerRelation;
         FlowLayout layout = new FlowLayout();
-        JComboBox<Noeud> comboNoeudGauche=new JComboBox<Noeud>();
-        JComboBox<Noeud> comboNoeudDroit=new JComboBox<Noeud>();
-        JComboBox<TypeRelation> comboRelation=new JComboBox<TypeRelation>();
-        buttonRefresh= new JButton("Refresh");
+        this.textFieldNomRelation = new HintTextField("Nom de la relation");
+        comboNoeudGauche = new JComboBox<Noeud>();
+        comboNoeudDroit = new JComboBox<Noeud>();
+        comboRelation = new JComboBox<TypeRelation>();
         setLayout(layout);
-        
+        this.grapheVisuel = grapheVisuel;
         this.grapheLogique = grapheLogique;
-        
+
         for (Noeud n : (ArrayList<Noeud>) grapheLogique.getGraphe()) {
-            
             comboNoeudGauche.addItem(n);
             comboNoeudDroit.addItem(n);
         }
@@ -63,53 +64,71 @@ public class JPanelRelation extends JPanel{
         AutoCompleteDecorator.decorate(comboNoeudDroit);
         AutoCompleteDecorator.decorate(comboRelation);
 
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createRelation((Noeud)comboNoeudGauche.getSelectedItem(), (Noeud)comboNoeudDroit.getSelectedItem(),(TypeRelation) comboRelation.getSelectedItem());
-                grapheLogique.convertToVisualGraph();
-            }
-        });
-        buttonRefresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-                for (Noeud n : (ArrayList<Noeud>) grapheLogique.getGraphe()) {
-                    comboNoeudGauche.removeItem(n);
-                    comboNoeudDroit.removeItem(n);
-                }
-                for (Noeud n : (ArrayList<Noeud>) grapheLogique.getGraphe()) {
-                    comboNoeudGauche.addItem(n);
-                    comboNoeudDroit.addItem(n);
-                }
-            }
-        });
+        boutonCreerRelation.addActionListener(new BoutonCreerRelationAL(this, grapheLogique, grapheVisuel));
 
         JLabel noeud1 = new JLabel("Noeud : ");
         JLabel relationLabel = new JLabel("Relation: ");
         JLabel noeud2 = new JLabel("Noeud : ");
+
         this.add(noeud1);
         this.add(comboNoeudGauche);
         this.add(relationLabel);
         this.add(comboRelation);
+        this.add(textFieldNomRelation);
         this.add(noeud2);
         this.add(comboNoeudDroit);
-        this.add(button);
-        this.add(buttonRefresh);
+        this.add(boutonCreerRelation);
+
     }
+
     /**
-     * crée une relation entre deux nœuds
+     * crée une relation logique entre deux nœuds
      * 
-     * @param n1 le premier nœud
-     * @param n2 le nœud qui sera la cible de la relation
+     * @param n1           le premier nœud
+     * @param n2           le nœud qui sera la cible de la relation
      * @param typeRelation le type de la relation
      */
-    
-    private void createRelation(Noeud n1, Noeud n2, TypeRelation typeRelation){
-        Relation r = new Relation(typeRelation, "type", n1, n2);
-        n1.relieNoeuds(n2,r);
-        
+
+    public Relation createRelationLogique(Noeud n1, Noeud n2, TypeRelation typeRelation, String nomRelation) {
+        Relation r = new Relation(typeRelation, nomRelation, n1, n2);
+        n1.relieNoeuds(n2, r);
+        return r;
+    }
+
+    public void createRelationVisuel(Noeud n1, Noeud n2, Relation r) {
+        System.out.println("relie:" + n2);
+        grapheVisuel.addEdge(r.getId(), n1.getId(), n2.getId(), true);
+        grapheVisuel.getEdge(r.getId()).setAttribute("ui.label", r.getRelLabel());
+    }
+
+    /**
+     * Cette fonction renvoie l'objet comboNoeudGauche
+     * 
+     * @return L'objet comboNoeudGauche.
+     */
+    public JComboBox<Noeud> getComboNoeudGauche() {
+        return this.comboNoeudGauche;
+    }
+
+    /**
+     * * Cette fonction renvoie l'objet comboNoeudDroit
+     * 
+     * @return La zone de liste déroulante du nœud droit.
+     */
+    public JComboBox<Noeud> getComboNoeudDroit() {
+        return this.comboNoeudDroit;
+    }
+
+    /**
+     * * Cette fonction renvoie l'objet comboRelation
+     * 
+     * @return L'objet comboRelation.
+     */
+    public JComboBox<TypeRelation> getComboRelation() {
+        return this.comboRelation;
+    }
+
+    public HintTextField getTextFieldNomRelation() {
+        return this.textFieldNomRelation;
     }
 }
-
-
