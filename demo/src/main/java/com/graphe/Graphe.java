@@ -8,7 +8,10 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+
+import java.io.*;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -16,6 +19,9 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java.awt.*;
 import org.graphstream.graph.*;
@@ -151,10 +157,12 @@ public class Graphe {
         System.setProperty("org.graphstream.ui", "swing");
         Graph graph = g.convertToVisualGraph();
 
-        java.nio.file.Path filePath = java.nio.file.Paths.get("demo/src/main/java/com/graphe/vue", "style.css");
-
+        Path filePath = Paths.get("demo/src/main/java/com/graphe/vue", "style.css");
+        
         try {
-            graph.setAttribute("ui.stylesheet", Files.readString(filePath));
+            List<String>contentArray = Files.readAllLines(filePath);
+            String content = String.join("\n", contentArray);
+            graph.setAttribute("ui.stylesheet", content);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
