@@ -8,7 +8,8 @@ public class Noeud {
     private List<Noeud> noeudsRelie = new ArrayList<Noeud>();
     private List<Relation> relations = new ArrayList<Relation>();
     private String ID;
-    
+    protected String typeNoeud;
+
     /**
      * Cette fonction retourne la liste des nœuds connectés au nœud courant
      * 
@@ -54,5 +55,13 @@ public class Noeud {
 
     public void setId(String id) {
         this.ID = id;
+    }
+
+    public String getTypeNoeud() {
+        return this.typeNoeud;
+    }
+
+    public void setTypeNoeud(String typeNoeud) {
+        this.typeNoeud = typeNoeud;
     }
 }

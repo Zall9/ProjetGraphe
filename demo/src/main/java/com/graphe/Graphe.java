@@ -4,12 +4,19 @@ package com.graphe;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.io.IOException;
+import java.nio.file.Files;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.awt.*;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -46,7 +53,7 @@ public class Graphe {
      * 
      * @return The list of nodes.
      */
-    private List<Noeud> getGraphe() {
+    public List<Noeud> getGraphe() {
         return this.noeuds;
     }
 
@@ -65,7 +72,7 @@ public class Graphe {
      * 
      * @param n the node to add
      */
-    private void ajouterNoeud(Noeud n) {
+    public void ajouterNoeud(Noeud n) {
         noeuds.add(n);
     }
 
@@ -75,24 +82,25 @@ public class Graphe {
      * 
      * @return A graph object
      */
-    private Graph convertToVisualGraph() throws ElementNotFoundException {
+    Graph convertToVisualGraph() throws ElementNotFoundException {
         List<Relation> relsCourant;
         int cpt;
         Graph graph = new SingleGraph("Graphe");
         for (Noeud n : noeuds) {
             graph.addNode(n.getId());
             System.out.println("noeud ajouté a graph " + n);
-            graph.getNode(n.getId()).setAttribute("ui.label", n.toString());    
+            graph.getNode(n.getId()).setAttribute("ui.label", n.toString());
         }
         for (Noeud n : noeuds) {
             System.out.println("noeud courant: " + n);
             relsCourant = n.getRelations();
-            cpt=0;
+            cpt = 0;
             for (Noeud n2 : n.getNoeudsRelie()) {
 
                 System.out.println("relie:" + n2);
                 graph.addEdge(relsCourant.get(cpt).getId(), n.getId(), n2.getId(), true);
-                graph.getEdge(relsCourant.get(cpt).getId()).setAttribute("ui.label", relsCourant.get(cpt).getRelLabel());
+                graph.getEdge(relsCourant.get(cpt).getId()).setAttribute("ui.label",
+                        relsCourant.get(cpt).getRelLabel());
                 cpt++;
 
             }
@@ -105,13 +113,12 @@ public class Graphe {
             String selectedItem = (String) e.getItem();
         }
     }
+
     public static void main(String[] args) {
         System.setProperty("org.graphstream.ui", "swing");
         JFrame maFenetre = new JFrame("Graphe");
-        JPanel pa = new JPanel();
-        String s1[]={"Attribut","Concept","Attribut"};
+        String s1[] = { "Concept", "Instance", "Attribut" };
         JComboBox<String> combo = new JComboBox<String>(s1);
-        String mavar="";
         Graphe g = new Graphe();
 
         // ask user to input
@@ -141,55 +148,53 @@ public class Graphe {
         g.afficheGraphe();
         System.setProperty("org.graphstream.ui", "swing");
         Graph graph = g.convertToVisualGraph();
-        graph.setAttribute("ui.stylesheet",
-                "url('file:///home/deliferp/Documents/Fac/semestre6/mavenProjetGraphe/demo/src/main/java/com/graphe/vue/style.css')");
+        // graph = g.rechercheInstancesDeConcept("Person",
+        // false).convertToVisualGraph();
+        Path filePath = Paths.get("demo/src/main/java/com/graphe/vue", "style.css");
+        try {
+            List<String> contentArray = Files.readAllLines(filePath);
+            String content = String.join("\n", contentArray);
+            graph.setAttribute("ui.stylesheet", content);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
         Viewer viewer = new SwingViewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
-        DefaultView view = (DefaultView) viewer.addDefaultView(false);   // false indicates "no JFrame".
+        DefaultView view = (DefaultView) viewer.addDefaultView(false); // false indicates "no JFrame".
 
         // Création des boutons
+        JLabel labelAjoutNoeud = new JLabel("Ajouter un noeud");
+        JLabel labelAjoutRelation = new JLabel("Ajouter une relation");
         JPanel panel = new JPanel();
-        
+
         // Choix création noeud
-        JPanel panelChoixCreerNoeud = new JPanel();
-        BoxLayout box=new BoxLayout(panel,BoxLayout.Y_AXIS);
+        JPanel panelChoixCreerNoeudConteneur = new JPanel();
+        // Au départ on est sur concept
+        JPanelAvecTypeNoeud panelChoixCreerNoeudCourant = new JPanelConcept();
+        BoxLayout box = new BoxLayout(panel, BoxLayout.Y_AXIS);
         panel.setLayout(box);
-        JButton bouton1 = new JButton("Afficher");
-        bouton1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JButton boutonCreerNoeud = new JButton("Créer un noeud");
+        boutonCreerNoeud.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JButton boutonCreerRelation = new JButton("Creer la relation entre les deux noeuds");
+        boutonCreerRelation.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanelRelation panelRelation = new JPanelRelation(g, graph, boutonCreerRelation);
         JButton bouton2 = new JButton("Sauvegarder");
         bouton2.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton bouton3 = new JButton("Charger");
         bouton3.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton bouton4 = new JButton("Quitter");
         bouton4.setAlignmentX(Component.CENTER_ALIGNMENT);
-        //listener sur la box
-        
-    //     combo.addItemListener(new ItemListener()
-    // {
-    //     @Override
-    //     public void itemStateChanged(ItemEvent e)
-    //     {
-    //         if(e.getID() == ItemEvent.ITEM_STATE_CHANGED)
-    //         {
-    //             if(e.getStateChange() == ItemEvent.SELECTED)
-    //             {
-    //                 JComboBox<String> cb = (JComboBox<String>) e.getSource();
-    //                 String newSelection = (String) cb.getSelectedItem();
-    //                 System.out.println("newSelection: " + newSelection);
-    //             }
-    //         }
-    //     }
-    // });
-        combo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                JComboBox<String> cb = (JComboBox<String>) e.getSource(); 
-                System.out.println(cb.getSelectedItem() + "");
-                
-            }
-        });
-        //Création des réactions pour les bouttons
-        bouton1.addActionListener(new ActionListener() {
+
+        System.out.println(combo.getSelectedItem() + "");
+        // listener sur la box
+        combo.addActionListener(new ChoixTypeConceptActionListener(combo, panelChoixCreerNoeudConteneur,
+                panelChoixCreerNoeudCourant, boutonCreerNoeud, graph, g, panelRelation));
+
+        // Création des réactions pour les bouttons
+        boutonCreerNoeud
+                .addActionListener(new CreerNoeudActionListener(panelChoixCreerNoeudCourant, g, graph, panelRelation));
+
+        boutonCreerRelation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Ici !");
@@ -214,22 +219,94 @@ public class Graphe {
             }
         });
 
-        //Ajout des boutons au panel
+        panelRelation.setMaximumSize(panelRelation.getPreferredSize());
+
+        // Ajouts au panelChoixCreerNoeud
+        panelChoixCreerNoeudConteneur.add(panelChoixCreerNoeudCourant);
+
+        // Ajout des boutons au panel principal
         combo.setMaximumSize(combo.getPreferredSize());
+        // ajout noeuds
+        panel.add(labelAjoutNoeud);
         panel.add(combo);
-        panel.add(panelChoixCreerNoeud);
-        panel.add(bouton1);
+        panelChoixCreerNoeudConteneur.setMaximumSize(panelChoixCreerNoeudConteneur.getPreferredSize());
+        panel.add(panelChoixCreerNoeudConteneur);
+        panel.add(boutonCreerNoeud);
+        // relations
+        panel.add(labelAjoutRelation);
+        panel.add(panelRelation);
+        panel.add(boutonCreerRelation);
         panel.add(bouton2);
         panel.add(bouton3);
         panel.add(bouton4);
         // Création de la fenetre et ajout des composants:
-        maFenetre.setSize(800, 600);
+        maFenetre.setSize(1920, 1080);
         maFenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         maFenetre.setLocationRelativeTo(null);
         maFenetre.add(panel, BorderLayout.EAST);
-        maFenetre.add(view, BorderLayout.CENTER);  
+        maFenetre.add(view, BorderLayout.CENTER);
         maFenetre.setVisible(true);
 
+        // TESTS
+        System.out.println("-----------------TESTS---------------------");
+        Graphe g2 = g.rechercheInstancesDeConcept("Person", false);
+        System.out.println(g2);
     }
- 
+
+    /**
+     * renvoie un graphe contenant toutes les instances d'un concept donné
+     * 
+     * @param g          le graphique à rechercher
+     * @param nomConcept le nom du concept que vous souhaitez rechercher
+     * @return Un graphe contenant toutes les instances d'un concept.
+     */
+    public Graphe rechercheInstancesDeConcept(String nomConcept, boolean afficherAttributsInstances) {
+        Graphe gRecherche = new Graphe();
+        for (Noeud n : this.getGraphe()) {
+            System.out.println(
+                    "n : " + n + "  n.getTypeNoeud().equals('Instance') : " + n.getTypeNoeud().equals("Instance"));
+            if (n.getTypeNoeud().equals("Instance")) {
+                for (Noeud nRelie : n.getNoeudsRelie()) {
+                    System.out.println("nrelie : " + nRelie +
+                            "   nRelie.getTypeNoeud().equals(Concept) : " + nRelie.getTypeNoeud().equals("Concept"));
+                    if (nRelie.getTypeNoeud().equals("Concept")) {
+                        ConceptNoeud nc = (ConceptNoeud) nRelie;
+                        System.out.println(
+                                "nc.getTypeNoeud().equals(nomConcept : " + nc.getTypeNoeud().equals(nomConcept));
+                        System.out.println("nc vaut: " + nc.getNomConcept());
+                        if (nc.getNomConcept().equals(nomConcept)) {
+                            gRecherche.ajouterNoeud(nc);
+                            gRecherche.ajouterNoeud(n);
+                        }
+                    }
+                }
+            }
+        }
+        return gRecherche;
+    }
+
+    /**
+     * renvoie la relation entre deux nœuds
+     * 
+     * @param n1 le premier nœud
+     * @param n2 le nœud que nous voulons atteindre
+     * @return La relation entre deux nœuds.
+     */
+    public Relation getRelationEntreNoeuds(Noeud n1, Noeud n2) {
+        for (Relation r : n1.getRelations()) {
+            if (r.getNoeudArrive().equals(n2)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        String s = "";
+        for (Noeud n : this.getGraphe()) {
+            s += n.toString() + "\n";
+        }
+        return s;
+    }
 }

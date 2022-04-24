@@ -25,7 +25,7 @@ public class Relation {
     TypeRelation getTypeDeRelation() {
         return this.typeDeRelation;
     }
-    
+
     /**
      * Cette fonction fixe le type de relation de l'objet courant à la valeur passée
      * en paramètre.
@@ -45,6 +45,7 @@ public class Relation {
     String getValeur() {
         return this.valeur;
     }
+
     /**
      * Il définit la valeur de l'attribut value à la valeur passée en paramètre
      * 
@@ -65,12 +66,36 @@ public class Relation {
     }
 
     public String getRelLabel() {
-        
-        return getTypeDeRelation().name()+ ":" +getValeur() ;
+
+        return getTypeDeRelation().name() + ":" + getValeur();
     }
 
     public String getId() {
         return this.ID;
+    }
+
+    public Noeud getNoeudDepart() {
+        return this.noeudDepart;
+    }
+
+    public void setNoeudDepart(Noeud noeudDepart) {
+        this.noeudDepart = noeudDepart;
+    }
+
+    public Noeud getNoeudArrive() {
+        return this.noeudArrive;
+    }
+
+    public void setNoeudArrive(Noeud noeudArrive) {
+        this.noeudArrive = noeudArrive;
+    }
+
+    public String getID() {
+        return this.ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
 }
