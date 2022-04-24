@@ -190,6 +190,8 @@ public class Graphe {
         combo.addActionListener(new ChoixTypeConceptActionListener(combo, panelChoixCreerNoeudConteneur,
                 panelChoixCreerNoeudCourant, boutonCreerNoeud, graph, g, panelRelation));
 
+
+        JPanelParcours panelParcours = new JPanelParcours(g);
         // Création des réactions pour les bouttons
         boutonCreerNoeud
                 .addActionListener(new CreerNoeudActionListener(panelChoixCreerNoeudCourant, g, graph, panelRelation));
@@ -236,6 +238,11 @@ public class Graphe {
         panel.add(labelAjoutRelation);
         panel.add(panelRelation);
         panel.add(boutonCreerRelation);
+
+        //Parcours
+        panel.add(panelParcours);
+        
+        //Bouttons
         panel.add(bouton2);
         panel.add(bouton3);
         panel.add(bouton4);
