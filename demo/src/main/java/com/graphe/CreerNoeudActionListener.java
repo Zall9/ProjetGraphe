@@ -33,6 +33,8 @@ public class CreerNoeudActionListener implements ActionListener {
             grapheVisuel.addNode(nouveauNoeudConcept.getId());
             System.out.println("Noeud ajouté au graphe visuel " + nouveauNoeudConcept);
             grapheVisuel.getNode(nouveauNoeudConcept.getId()).setAttribute("ui.label", nouveauNoeudConcept.toString());
+            grapheVisuel.getNode(nouveauNoeudConcept.getId()).setAttribute("ui.class",
+                    nouveauNoeudConcept.getTypeNoeud());
             // Ajout du nouveau noeud aux combobox du panel relation
             panelRelation.getComboNoeudDroit().addItem(nouveauNoeudConcept);
             panelRelation.getComboNoeudGauche().addItem(nouveauNoeudConcept);
@@ -47,6 +49,8 @@ public class CreerNoeudActionListener implements ActionListener {
             System.out.println("noeud ajouté a graph " + nouveauNoeudInstance);
             grapheVisuel.getNode(nouveauNoeudInstance.getId()).setAttribute("ui.label",
                     nouveauNoeudInstance.toString());
+            grapheVisuel.getNode(nouveauNoeudInstance.getId()).setAttribute("ui.class",
+                    nouveauNoeudInstance.getTypeNoeud());
             // Ajout du nouveau noeud aux combobox du panel relation
             panelRelation.getComboNoeudDroit().addItem(nouveauNoeudInstance);
             panelRelation.getComboNoeudGauche().addItem(nouveauNoeudInstance);
@@ -61,6 +65,8 @@ public class CreerNoeudActionListener implements ActionListener {
             System.out.println("noeud ajouté a graph " + nouveauNoeudAttribut);
             grapheVisuel.getNode(nouveauNoeudAttribut.getId()).setAttribute("ui.label",
                     nouveauNoeudAttribut.toString());
+            grapheVisuel.getNode(nouveauNoeudAttribut.getId()).setAttribute("ui.class",
+                    nouveauNoeudAttribut.getTypeNoeud());
 
             // Ajout du nouveau noeud aux combobox du panel relation
             panelRelation.getComboNoeudDroit().addItem(nouveauNoeudAttribut);
