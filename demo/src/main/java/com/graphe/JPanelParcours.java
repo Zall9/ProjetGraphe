@@ -151,7 +151,6 @@ class JPanelParcours extends JPanel {
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
                                     dicoDonnees.put("relation", comboRelation.getSelectedItem());
-                                    System.out.println(dicoDonnees.get("relation"));
                                 }
                             });
                             pan.add(comboRelation);

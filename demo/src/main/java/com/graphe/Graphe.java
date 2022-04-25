@@ -153,6 +153,49 @@ public class Graphe {
         }
     }
 
+    /**
+     * It takes a graph and a relation as parameters, clears the graph, adds the
+     * nodes and edges to the
+     * graph, and then displays the graph
+     * 
+     * @param graph the graph to be displayed
+     * @param r     the relation that we want to display
+     */
+    void updateVisualGraph(Graph graph, Relation r) {
+        List<Relation> relsCourant;
+        int cpt;
+        graph.clear();
+        Path filePath = Paths.get("demo/src/main/java/com/graphe/vue", "style.css");
+        try {
+            List<String> contentArray = Files.readAllLines(filePath);
+            String content = String.join("\n", contentArray);
+            graph.setAttribute("ui.stylesheet", content);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        for (Noeud n : noeuds) {
+            graph.addNode(n.getId());
+            graph.getNode(n.getId()).setAttribute("ui.label", n.toString());
+        }
+        for (Noeud n : noeuds) {
+            System.out.println("noeud courant: " + n);
+            relsCourant = n.getRelations();
+            cpt = 0;
+            for (Noeud n2 : n.getNoeudsRelie()) {
+                if (estDansGraphe(n2)) {
+                    if (n.getRelations().get(cpt).equals(r)) {
+                        System.out.println("relie:" + n2);
+                        graph.addEdge(relsCourant.get(cpt).getId(), n.getId(), n2.getId(), true);
+                        graph.getEdge(relsCourant.get(cpt).getId()).setAttribute("ui.label",
+                                relsCourant.get(cpt).getRelLabel());
+                    }
+                }
+                cpt++;
+            }
+        }
+    }
+
     public void comboBoxitemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             String selectedItem = (String) e.getItem();

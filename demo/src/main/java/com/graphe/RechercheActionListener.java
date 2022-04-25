@@ -30,9 +30,10 @@ public class RechercheActionListener implements ActionListener {
             grapheLogique.updateVisualGraph(grapheVisuel);
         } else if (dicoDonnees.get("typeRecherche").equals("Noeuds selon relation")) {
             Noeud noeudRecherche = (Noeud) dicoDonnees.get("noeudRecherche");
+            System.out.println((Relation) dicoDonnees.get("relation"));
             Relation relation = (Relation) dicoDonnees.get("relation");
             Graphe grapheRecherche = grapheLogique.rechercheLienNoeud(noeudRecherche, relation);
-            grapheRecherche.updateVisualGraph(grapheVisuel);
+            grapheRecherche.updateVisualGraph(grapheVisuel, relation);
         }
     }
 
