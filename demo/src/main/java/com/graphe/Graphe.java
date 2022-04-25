@@ -86,6 +86,15 @@ public class Graphe {
         List<Relation> relsCourant;
         int cpt;
         Graph graph = new SingleGraph("Graphe");
+        Path filePath = Paths.get("demo/src/main/java/com/graphe/vue", "style.css");
+        try {
+            List<String> contentArray = Files.readAllLines(filePath);
+            String content = String.join("\n", contentArray);
+            graph.setAttribute("ui.stylesheet", content);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
         for (Noeud n : noeuds) {
             graph.addNode(n.getId());
             System.out.println("noeud ajouté a graph " + n);
@@ -96,16 +105,52 @@ public class Graphe {
             relsCourant = n.getRelations();
             cpt = 0;
             for (Noeud n2 : n.getNoeudsRelie()) {
-
-                System.out.println("relie:" + n2);
-                graph.addEdge(relsCourant.get(cpt).getId(), n.getId(), n2.getId(), true);
-                graph.getEdge(relsCourant.get(cpt).getId()).setAttribute("ui.label",
-                        relsCourant.get(cpt).getRelLabel());
-                cpt++;
+                if (estDansGraphe(n2)) {
+                    System.out.println("relie:" + n2);
+                    graph.addEdge(relsCourant.get(cpt).getId(), n.getId(), n2.getId(), true);
+                    graph.getEdge(relsCourant.get(cpt).getId()).setAttribute("ui.label",
+                            relsCourant.get(cpt).getRelLabel());
+                    cpt++;
+                }
 
             }
         }
         return graph;
+    }
+
+    void updateVisualGraph(Graph graph) {
+        List<Relation> relsCourant;
+        int cpt;
+        graph.clear();
+        Path filePath = Paths.get("demo/src/main/java/com/graphe/vue", "style.css");
+        try {
+            List<String> contentArray = Files.readAllLines(filePath);
+            String content = String.join("\n", contentArray);
+            graph.setAttribute("ui.stylesheet", content);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        for (Noeud n : noeuds) {
+            graph.addNode(n.getId());
+            System.out.println("noeud ajouté a graph " + n);
+            graph.getNode(n.getId()).setAttribute("ui.label", n.toString());
+        }
+        for (Noeud n : noeuds) {
+            System.out.println("noeud courant: " + n);
+            relsCourant = n.getRelations();
+            cpt = 0;
+            for (Noeud n2 : n.getNoeudsRelie()) {
+                if (estDansGraphe(n2)) {
+                    System.out.println("relie:" + n2);
+                    graph.addEdge(relsCourant.get(cpt).getId(), n.getId(), n2.getId(), true);
+                    graph.getEdge(relsCourant.get(cpt).getId()).setAttribute("ui.label",
+                            relsCourant.get(cpt).getRelLabel());
+                    cpt++;
+                }
+
+            }
+        }
     }
 
     public void comboBoxitemStateChanged(ItemEvent e) {
@@ -148,16 +193,6 @@ public class Graphe {
         g.afficheGraphe();
         System.setProperty("org.graphstream.ui", "swing");
         Graph graph = g.convertToVisualGraph();
-        // graph = g.rechercheInstancesDeConcept("Person",
-        // false).convertToVisualGraph();
-        Path filePath = Paths.get("demo/src/main/java/com/graphe/vue", "style.css");
-        try {
-            List<String> contentArray = Files.readAllLines(filePath);
-            String content = String.join("\n", contentArray);
-            graph.setAttribute("ui.stylesheet", content);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
         Viewer viewer = new SwingViewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
         DefaultView view = (DefaultView) viewer.addDefaultView(false); // false indicates "no JFrame".
@@ -190,8 +225,7 @@ public class Graphe {
         combo.addActionListener(new ChoixTypeConceptActionListener(combo, panelChoixCreerNoeudConteneur,
                 panelChoixCreerNoeudCourant, boutonCreerNoeud, graph, g, panelRelation));
 
-
-        JPanelParcours panelParcours = new JPanelParcours(g);
+        JPanelParcours panelParcours = new JPanelParcours(g, graph);
         // Création des réactions pour les bouttons
         boutonCreerNoeud
                 .addActionListener(new CreerNoeudActionListener(panelChoixCreerNoeudCourant, g, graph, panelRelation));
@@ -239,15 +273,15 @@ public class Graphe {
         panel.add(panelRelation);
         panel.add(boutonCreerRelation);
 
-        //Parcours
+        // Parcours
         panel.add(panelParcours);
-        
-        //Bouttons
+
+        // Bouttons
         panel.add(bouton2);
         panel.add(bouton3);
         panel.add(bouton4);
         // Création de la fenetre et ajout des composants:
-        maFenetre.setSize(1920, 1080);
+        maFenetre.setSize(1280, 720);
         maFenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         maFenetre.setLocationRelativeTo(null);
         maFenetre.add(panel, BorderLayout.EAST);
@@ -256,7 +290,7 @@ public class Graphe {
 
         // TESTS
         System.out.println("-----------------TESTS---------------------");
-        Graphe g2 = g.rechercheInstancesDeConcept("Person", false);
+        Graphe g2 = g.rechercheInstancesDeConcept("foaf:Person", false);
         System.out.println(g2);
     }
 
@@ -270,20 +304,23 @@ public class Graphe {
     public Graphe rechercheInstancesDeConcept(String nomConcept, boolean afficherAttributsInstances) {
         Graphe gRecherche = new Graphe();
         for (Noeud n : this.getGraphe()) {
-            System.out.println(
-                    "n : " + n + "  n.getTypeNoeud().equals('Instance') : " + n.getTypeNoeud().equals("Instance"));
             if (n.getTypeNoeud().equals("Instance")) {
                 for (Noeud nRelie : n.getNoeudsRelie()) {
-                    System.out.println("nrelie : " + nRelie +
-                            "   nRelie.getTypeNoeud().equals(Concept) : " + nRelie.getTypeNoeud().equals("Concept"));
                     if (nRelie.getTypeNoeud().equals("Concept")) {
                         ConceptNoeud nc = (ConceptNoeud) nRelie;
-                        System.out.println(
-                                "nc.getTypeNoeud().equals(nomConcept : " + nc.getTypeNoeud().equals(nomConcept));
-                        System.out.println("nc vaut: " + nc.getNomConcept());
-                        if (nc.getNomConcept().equals(nomConcept)) {
-                            gRecherche.ajouterNoeud(nc);
+                        if (nc.toString().equals(nomConcept)) {
+                            if (!gRecherche.estDansGraphe(nc)) {
+                                gRecherche.ajouterNoeud(nc);
+                            }
                             gRecherche.ajouterNoeud(n);
+                            if (afficherAttributsInstances) {
+                                for (Noeud na : n.getNoeudsRelie()) {
+                                    if (na.getTypeNoeud().equals("Attribut")) {
+                                        AttributNoeud an = (AttributNoeud) na;
+                                        gRecherche.ajouterNoeud(an);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -315,5 +352,14 @@ public class Graphe {
             s += n.toString() + "\n";
         }
         return s;
+    }
+
+    public boolean estDansGraphe(Noeud n) {
+        for (Noeud noeud : this.getGraphe()) {
+            if (noeud.equals(n)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

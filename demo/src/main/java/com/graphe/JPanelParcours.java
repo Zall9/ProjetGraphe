@@ -5,67 +5,133 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+
 import org.graphstream.graph.Graph;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-
-
-class JPanelParcours extends JPanel{
+class JPanelParcours extends JPanel {
     private String typeRecherche[];
     private JComboBox<String> comboSelection;
-    private JButton bouton;
+    private JButton boutonRecherche;
     private JComboBox<Noeud> comboRecherche;
-    private Graphe g;
+    private Graphe grapheLogique;
+    private Graph grapheVisuel;
     private JPanel pan;
-    JPanelParcours(Graphe g) {
+    private Map<String, String> dicoDonnees;
+
+    JPanelParcours(Graphe grapheLogique, Graph grapheVisuel) {
         super();
-        pan= new JPanel();
-        this.g=g;
+        pan = new JPanel();
+        this.grapheLogique = grapheLogique;
+        this.grapheVisuel = grapheVisuel;
         comboSelection = new JComboBox<String>();
+        dicoDonnees = new HashMap<String, String>();
         FlowLayout layout = new FlowLayout();
         pan.setLayout(layout);
-        typeRecherche = new String[]{"Instances d'un Concept","Noeuds qui ont un attribut"};
+        typeRecherche = new String[] { "Instances d'un Concept", "Afficher le graphe principal",
+                "Noeuds qui ont un attribut" };
         JLabel label = new JLabel("Parcours : ");
-        AutoCompleteDecorator.decorate(comboSelection);
-        for (String str: typeRecherche) {
+        for (String str : typeRecherche) {
             comboSelection.addItem(str);
         }
-        //comboRecherche = new JComboBox<Noeud>();
-        bouton = new JButton("Chercher !");
-        pan.add(label);
-        pan.add(comboSelection);
+        // comboRecherche = new JComboBox<Noeud>();
+        boutonRecherche = new JButton("Chercher !");
+        add(label);
+        add(comboSelection);
+
+        // On est par défaut sur recherche des instances d'un concept
+        comboRecherche = new JComboBox<Noeud>();
+        // listener sur le comboBox de la selection du concept qui met a jour le dico de
+        // données
+        comboRecherche.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                dicoDonnees.put("concept", comboRecherche.getSelectedItem().toString());
+            }
+        });
+        dicoDonnees.put("typeRecherche", typeRecherche[0]);
+        AutoCompleteDecorator.decorate(comboRecherche);
+        for (Noeud n : grapheLogique.getGraphe()) {
+            if (n.getTypeNoeud().equals("Concept")) {
+                comboRecherche.addItem(n);
+            }
+        }
+        JCheckBox cb = new JCheckBox("Afficher attributs");
+        cb.setSelected(true);
+        cb.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                dicoDonnees.put("afficherAttributs", cb.isSelected() + "");
+            }
+        });
+        dicoDonnees.put("afficherAttributs", "true");
+
+        pan.add(comboRecherche);
+        pan.add(cb);
+
+        // Ajout du listener sur la selection du type de recherche
         comboSelection.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(pan.getComponent(3)!=null){
-                    pan.remove(3);}
+                System.out.println(comboSelection.getSelectedItem());
+                pan.removeAll();
+
                 if (comboSelection.getSelectedItem().equals(typeRecherche[0])) {
                     comboRecherche = new JComboBox<Noeud>();
+                    // listener sur le comboBox de la selection du concept qui met a jour le dico de
+                    // données
+                    comboRecherche.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent arg0) {
+                            dicoDonnees.put("concept", comboRecherche.getSelectedItem().toString());
+                        }
+                    });
+
+                    dicoDonnees.put("typeRecherche", typeRecherche[0]);
                     AutoCompleteDecorator.decorate(comboRecherche);
-                    for(Noeud n : g.getGraphe()){
-                        System.out.println("Type de n: "+n.getTypeNoeud());
-                        System.out.println("n.getTypeNoeud().equals(Concept)"+n.getTypeNoeud().equals("Concept"));
-                        if(n.getTypeNoeud().equals("Concept")){
+                    for (Noeud n : grapheLogique.getGraphe()) {
+                        if (n.getTypeNoeud().equals("Concept")) {
                             comboRecherche.addItem(n);
                         }
                     }
-                }
-                else if (comboSelection.getSelectedItem().equals("Noeuds qui ont un attribut")) {
+
+                    JCheckBox cb = new JCheckBox("Afficher attributs");
+                    cb.setSelected(true);
+                    dicoDonnees.put("afficherAttributs", cb.isSelected() + "");
+                    cb.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent ae) {
+                            dicoDonnees.put("afficherAttributs", cb.isSelected() + "");
+                        }
+                    });
+                    pan.add(comboRecherche);
+                    pan.add(cb);
+                } else if (comboSelection.getSelectedItem().equals(typeRecherche[1])) {
+                    dicoDonnees.put("typeRecherche", typeRecherche[1]);
+
+                } else if (comboSelection.getSelectedItem().equals(typeRecherche[2])) {
                     comboRecherche = new JComboBox<Noeud>();
                     AutoCompleteDecorator.decorate(comboRecherche);
-                    for(Noeud n : g.getGraphe()){
-                        if(n.getTypeNoeud().equals("Attribut")){
+                    for (Noeud n : grapheLogique.getGraphe()) {
+                        if (n.getTypeNoeud().equals("Attribut")) {
                             comboRecherche.addItem(n);
                         }
                     }
+                    pan.add(comboRecherche);
                 }
-                pan.add(comboRecherche);
+                pan.revalidate();
                 pan.repaint();
+                pan.setMaximumSize(pan.getPreferredSize());
             }
-        });   
+        });
+
+        boutonRecherche.addActionListener(new RechercheActionListener(grapheLogique, grapheVisuel, dicoDonnees));
+
         add(pan);
+        add(boutonRecherche);
     }
 }
