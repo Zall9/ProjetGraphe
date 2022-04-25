@@ -16,4 +16,5 @@ public class AttributNoeud extends Noeud {
     public String toString() {
         return "" + this.valeur;
     }
+
 }

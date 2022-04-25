@@ -11,7 +11,6 @@ import org.graphstream.graph.Graph;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,22 +19,24 @@ class JPanelParcours extends JPanel {
     private JComboBox<String> comboSelection;
     private JButton boutonRecherche;
     private JComboBox<Noeud> comboRecherche;
-    private Graphe grapheLogique;
-    private Graph grapheVisuel;
+    // private Graphe grapheLogique;
+    // private Graph grapheVisuel;
     private JPanel pan;
-    private Map<String, String> dicoDonnees;
+    private Map<String, Object> dicoDonnees;
+
+    private JComboBox<Relation> comboRelation;
 
     JPanelParcours(Graphe grapheLogique, Graph grapheVisuel) {
         super();
         pan = new JPanel();
-        this.grapheLogique = grapheLogique;
-        this.grapheVisuel = grapheVisuel;
+        // this.grapheLogique = grapheLogique;
+        // this.grapheVisuel = grapheVisuel;
         comboSelection = new JComboBox<String>();
-        dicoDonnees = new HashMap<String, String>();
+        dicoDonnees = new HashMap<String, Object>();
         FlowLayout layout = new FlowLayout();
         pan.setLayout(layout);
         typeRecherche = new String[] { "Instances d'un Concept", "Afficher le graphe principal",
-                "Noeuds qui ont un attribut" };
+                "Noeuds selon relation" };
         JLabel label = new JLabel("Parcours : ");
         for (String str : typeRecherche) {
             comboSelection.addItem(str);
@@ -114,23 +115,60 @@ class JPanelParcours extends JPanel {
                     dicoDonnees.put("typeRecherche", typeRecherche[1]);
 
                 } else if (comboSelection.getSelectedItem().equals(typeRecherche[2])) {
+                    dicoDonnees.put("typeRecherche", typeRecherche[2]);
                     comboRecherche = new JComboBox<Noeud>();
                     AutoCompleteDecorator.decorate(comboRecherche);
                     for (Noeud n : grapheLogique.getGraphe()) {
-                        if (n.getTypeNoeud().equals("Attribut")) {
+                        if (!n.getTypeNoeud().equals("Attribut")) {
                             comboRecherche.addItem(n);
                         }
                     }
+                    dicoDonnees.put("noeudRecherche", comboRecherche.getSelectedItem());
+                    comboRelation = new JComboBox<Relation>();
+                    AutoCompleteDecorator.decorate(comboRelation);
+                    Noeud nSelectione = (Noeud) comboRecherche.getSelectedItem();
+                    for (Relation r : nSelectione.getRelations()) {
+                        comboRelation.addItem(r);
+                    }
+                    comboRelation.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent arg0) {
+                            dicoDonnees.put("relation", comboRelation.getSelectedItem());
+                        }
+                    });
+                    comboRecherche.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent arg0) {
+                            pan.remove(comboRelation);
+                            dicoDonnees.put("noeudRecherche", comboRecherche.getSelectedItem());
+                            comboRelation = new JComboBox<Relation>();
+                            AutoCompleteDecorator.decorate(comboRelation);
+                            Noeud nSelectione = (Noeud) comboRecherche.getSelectedItem();
+                            for (Relation r : nSelectione.getRelations()) {
+                                comboRelation.addItem(r);
+                            }
+                            comboRelation.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent arg0) {
+                                    dicoDonnees.put("relation", comboRelation.getSelectedItem());
+                                    System.out.println(dicoDonnees.get("relation"));
+                                }
+                            });
+                            pan.add(comboRelation);
+                            pan.revalidate();
+                            pan.repaint();
+                            pan.setMaximumSize(pan.getPreferredSize());
+                        }
+                    });
                     pan.add(comboRecherche);
+                    pan.add(comboRelation);
                 }
                 pan.revalidate();
                 pan.repaint();
                 pan.setMaximumSize(pan.getPreferredSize());
             }
         });
-
         boutonRecherche.addActionListener(new RechercheActionListener(grapheLogique, grapheVisuel, dicoDonnees));
-
         add(pan);
         add(boutonRecherche);
     }

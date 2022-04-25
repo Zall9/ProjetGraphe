@@ -28,6 +28,11 @@ public class Noeud {
         return this.relations;
     }
 
+    public Relation getRelationAtIndex(int index) {
+        List<Relation> c = getRelations();
+        return c.get(index);
+    }
+
     /**
      * ajoute un nœud et une relation à la liste des nœuds et des relations du nœud
      * courant

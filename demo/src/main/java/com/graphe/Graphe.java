@@ -330,6 +330,28 @@ public class Graphe {
     }
 
     /**
+     * Il prend un nœud et un nom de relation comme paramètres, et renvoie un graphe
+     * contenant le nœud et
+     * tous les nœuds qui lui sont liés par la relation
+     * 
+     * @param noeudRecherche le nœud que nous recherchons
+     * @param nomRelation    le nom de la relation que vous souhaitez rechercher
+     * @return Un graphique
+     */
+    public Graphe rechercheLienNoeud(Noeud noeudRecherche, Relation relation) {
+        Graphe gRecherche = new Graphe();
+        int cpt = 0;
+        gRecherche.ajouterNoeud(noeudRecherche);
+        for (Noeud n : noeudRecherche.getNoeudsRelie()) {
+            if (noeudRecherche.getRelations().get(cpt).equals(relation)) {
+                gRecherche.ajouterNoeud(n);
+            }
+            cpt++;
+        }
+        return gRecherche;
+    }
+
+    /**
      * renvoie la relation entre deux nœuds
      * 
      * @param n1 le premier nœud

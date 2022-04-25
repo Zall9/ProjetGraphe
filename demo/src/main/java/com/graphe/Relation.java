@@ -57,12 +57,7 @@ public class Relation {
 
     @Override
     public String toString() {
-        return "Relation{" +
-                "typeDeRelation=" + typeDeRelation.name() +
-                ":" + valeur +
-                ", noeudDepart: " + noeudDepart +
-                ", noeudArrive: " + noeudArrive +
-                '}';
+        return getRelLabel();
     }
 
     public String getRelLabel() {
