@@ -2,6 +2,7 @@ package com.graphe;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.graphstream.graph.Graph;
@@ -30,10 +31,9 @@ public class RechercheActionListener implements ActionListener {
             grapheLogique.updateVisualGraph(grapheVisuel);
         } else if (dicoDonnees.get("typeRecherche").equals("Noeuds selon relation")) {
             Noeud noeudRecherche = (Noeud) dicoDonnees.get("noeudRecherche");
-            System.out.println((Relation) dicoDonnees.get("relation"));
-            Relation relation = (Relation) dicoDonnees.get("relation");
-            Graphe grapheRecherche = grapheLogique.rechercheLienNoeud(noeudRecherche, relation);
-            grapheRecherche.updateVisualGraph(grapheVisuel, relation);
+            ArrayList<Relation> relations = (ArrayList<Relation>) dicoDonnees.get("relation");
+            Graphe grapheRecherche = grapheLogique.rechercheLienNoeud(noeudRecherche, relations);
+            grapheRecherche.updateVisualGraph(grapheVisuel, relations);
         }
     }
 

@@ -99,6 +99,7 @@ public class Graphe {
             graph.addNode(n.getId());
             System.out.println("noeud ajouté a graph " + n);
             graph.getNode(n.getId()).setAttribute("ui.label", n.toString());
+            graph.getNode(n.getId()).setAttribute("ui.class", n.getTypeNoeud());
         }
         for (Noeud n : noeuds) {
             System.out.println("noeud courant: " + n);
@@ -135,6 +136,7 @@ public class Graphe {
             graph.addNode(n.getId());
             System.out.println("noeud ajouté a graph " + n);
             graph.getNode(n.getId()).setAttribute("ui.label", n.toString());
+            graph.getNode(n.getId()).setAttribute("ui.class", n.getTypeNoeud());
         }
         for (Noeud n : noeuds) {
             System.out.println("noeud courant: " + n);
@@ -146,8 +148,8 @@ public class Graphe {
                     graph.addEdge(relsCourant.get(cpt).getId(), n.getId(), n2.getId(), true);
                     graph.getEdge(relsCourant.get(cpt).getId()).setAttribute("ui.label",
                             relsCourant.get(cpt).getRelLabel());
-                    cpt++;
                 }
+                cpt++;
 
             }
         }
@@ -161,7 +163,7 @@ public class Graphe {
      * @param graph the graph to be displayed
      * @param r     the relation that we want to display
      */
-    void updateVisualGraph(Graph graph, Relation r) {
+    void updateVisualGraph(Graph graph, ArrayList<Relation> r) {
         List<Relation> relsCourant;
         int cpt;
         graph.clear();
@@ -175,8 +177,10 @@ public class Graphe {
         }
 
         for (Noeud n : noeuds) {
+            System.out.println("NOEUD ALED:" + n);
             graph.addNode(n.getId());
             graph.getNode(n.getId()).setAttribute("ui.label", n.toString());
+            graph.getNode(n.getId()).setAttribute("ui.class", n.getTypeNoeud());
         }
         for (Noeud n : noeuds) {
             System.out.println("noeud courant: " + n);
@@ -184,12 +188,13 @@ public class Graphe {
             cpt = 0;
             for (Noeud n2 : n.getNoeudsRelie()) {
                 if (estDansGraphe(n2)) {
-                    if (n.getRelations().get(cpt).equals(r)) {
+                    if (n.getRelations().get(cpt).toString().equals(r.get(0).toString())) {
                         System.out.println("relie:" + n2);
                         graph.addEdge(relsCourant.get(cpt).getId(), n.getId(), n2.getId(), true);
                         graph.getEdge(relsCourant.get(cpt).getId()).setAttribute("ui.label",
                                 relsCourant.get(cpt).getRelLabel());
                     }
+
                 }
                 cpt++;
             }
@@ -209,30 +214,126 @@ public class Graphe {
         JComboBox<String> combo = new JComboBox<String>(s1);
         Graphe g = new Graphe();
 
-        // ask user to input
-        ConceptNoeud cN1 = new ConceptNoeud(TypeConcept.foaf, "Person");
-        InstanceNoeud instanceAlice = new InstanceNoeud("Alice");
-        AttributNoeud attributAge = new AttributNoeud("24");
-        AttributNoeud attributNom = new AttributNoeud("Alice");
-        // ConceptNoeud cN2 = new ConceptNoeud(TypeConcept.ex, "Pronom");
-        AttributNoeud attributPronom = new AttributNoeud("Iel");
+        // -------------- Noeuds --------------
+        ConceptNoeud cN1 = new ConceptNoeud(TypeConcept.ex, "Film");
+        ConceptNoeud cN2 = new ConceptNoeud(TypeConcept.foaf, "Acteur");
+        InstanceNoeud iN1 = new InstanceNoeud("Matrix");
+        InstanceNoeud iN2 = new InstanceNoeud("Matrix2");
+        InstanceNoeud iN3 = new InstanceNoeud("Matrix3");
+        InstanceNoeud keanu = new InstanceNoeud("Keanu Reeves");
+        InstanceNoeud fishburne = new InstanceNoeud("Laurence Fishburne");
+        AttributNoeud attributAgeKeanu = new AttributNoeud("57");
+        AttributNoeud attributRoleKeanu = new AttributNoeud("Neo");
+        AttributNoeud attributAgeBurnes = new AttributNoeud("60");
+        AttributNoeud attributRoleBurnes = new AttributNoeud("Morpheus");
 
-        // todo RECUPERER LA RELATION ET FAIRE RELATION.TOSTRING
-        Relation rInstanceN1 = new Relation(TypeRelation.rdf, "type", instanceAlice, cN1);
-        Relation rAttributN2 = new Relation(TypeRelation.foaf, "age", instanceAlice, attributAge);
-        Relation rAttributN3 = new Relation(TypeRelation.foaf, "name", attributNom, instanceAlice);
-        Relation rAttributN4 = new Relation(TypeRelation.foaf, "pronom", instanceAlice, attributPronom);
+        AttributNoeud attributDateSortieMatrix = new AttributNoeud("1999");
+        AttributNoeud attributTitreMatrix = new AttributNoeud("\"Matrix\"");
+        AttributNoeud attributGenreMatrix = new AttributNoeud("Science-Fiction");
+        AttributNoeud attribut2GenreMatrix = new AttributNoeud("Action");
+
+        AttributNoeud attributDateSortieMatrix2 = new AttributNoeud("2003");
+        AttributNoeud attributTitreMatrix2 = new AttributNoeud("\"Matrix: Reloaded\"");
+        AttributNoeud attributGenreMatrix2 = new AttributNoeud("Science-Fiction");
+        AttributNoeud attribut2GenreMatrix2 = new AttributNoeud("Action");
+
+        AttributNoeud attributDateSortieMatrix3 = new AttributNoeud("2003");
+        AttributNoeud attributTitreMatrix3 = new AttributNoeud("\"Matrix: Revolutions\"");
+
+        // -------------- Relations --------------
+
+        Relation relNomKeanu = new Relation(TypeRelation.foaf, "role", keanu, attributRoleKeanu);
+        Relation relActeurKeanu = new Relation(TypeRelation.rdf, "type", keanu, cN2);
+        Relation relKeanuMatrix1 = new Relation(TypeRelation.dc, "acteur", keanu, iN1);
+        Relation relKeanuMatrix2 = new Relation(TypeRelation.dc, "acteur", keanu, iN2);
+        Relation relAgeKeanu = new Relation(TypeRelation.foaf, "age", keanu, attributAgeKeanu);
+
+        Relation relNomBurnes = new Relation(TypeRelation.foaf, "role", fishburne, attributRoleBurnes);
+        Relation relActeurBurnes = new Relation(TypeRelation.rdf, "type", fishburne, cN2);
+        Relation relBurnesMatrix1 = new Relation(TypeRelation.dc, "acteur", fishburne, iN1);
+        Relation relBurnesMatrix2 = new Relation(TypeRelation.dc, "acteur", fishburne, iN2);
+        Relation relAgeBurnes = new Relation(TypeRelation.foaf, "age", fishburne, attributAgeBurnes);
+
+        Relation matrix1Date = new Relation(TypeRelation.dc, "date", iN1, attributDateSortieMatrix);
+        Relation matrix1Titre = new Relation(TypeRelation.dc, "titre", iN1, attributTitreMatrix);
+        Relation matrix1Genre = new Relation(TypeRelation.dc, "genre", iN1, attributGenreMatrix);
+        Relation matrix1Genre2 = new Relation(TypeRelation.dc, "genre", iN1, attribut2GenreMatrix);
+        Relation relSuiteMatrix1 = new Relation(TypeRelation.rdfs, "seeAlso", iN1, iN2);
+        Relation matrixFilm = new Relation(TypeRelation.rdf, "type", iN1, cN1);
+        Relation matrixActeur1 = new Relation(TypeRelation.dc, "avec", iN1, keanu);
+        Relation matrixActeur2 = new Relation(TypeRelation.dc, "avec", iN1, fishburne);
+
+        Relation relInstanceMatrix2 = new Relation(TypeRelation.rdf, "type", iN2, cN1);
+        Relation relSuiteMatrix2 = new Relation(TypeRelation.rdfs, "seeAlso", iN2, iN3);
+        Relation relAttributMatrix2titre = new Relation(TypeRelation.dc, "titre", iN2, attributTitreMatrix2);
+        Relation relAttributMatrix2date = new Relation(TypeRelation.dc, "date", iN2, attributDateSortieMatrix2);
+        Relation relAttributMatrix2genre = new Relation(TypeRelation.dc, "genre", iN2, attributGenreMatrix2);
+        Relation relAttributMatrix2genre2 = new Relation(TypeRelation.dc, "genre", iN2, attribut2GenreMatrix2);
+        Relation relMatrix2Acteur1 = new Relation(TypeRelation.dc, "avec", iN2, fishburne);
+        Relation relMatrix2Acteur2 = new Relation(TypeRelation.dc, "avec", iN2, keanu);
+
+        Relation relInstanceMatrix3 = new Relation(TypeRelation.rdf, "type", iN3, cN1);
+        Relation relAttributMatrix3date = new Relation(TypeRelation.foaf, "dateSortie", iN3, attributDateSortieMatrix3);
+        Relation relAttributMatrix3titre = new Relation(TypeRelation.foaf, "titre", iN3, attributTitreMatrix3);
+
         // ajouter les relations au graphe
-        instanceAlice.relieNoeuds(cN1, rInstanceN1);
-        instanceAlice.relieNoeuds(attributAge, rAttributN2);
-        instanceAlice.relieNoeuds(attributNom, rAttributN3);
-        instanceAlice.relieNoeuds(attributPronom, rAttributN4);
+        keanu.relieNoeuds(iN1, relKeanuMatrix1);
+        keanu.relieNoeuds(iN2, relKeanuMatrix2);
+        keanu.relieNoeuds(cN2, relActeurKeanu);
+        keanu.relieNoeuds(attributRoleKeanu, relNomKeanu);
+        keanu.relieNoeuds(attributAgeKeanu, relAgeKeanu);
+
+        iN1.relieNoeuds(attributDateSortieMatrix, matrix1Date);
+        iN1.relieNoeuds(attributTitreMatrix, matrix1Titre);
+        iN1.relieNoeuds(attributGenreMatrix, matrix1Genre);
+        iN1.relieNoeuds(attribut2GenreMatrix, matrix1Genre2);
+        iN1.relieNoeuds(cN1, matrixFilm);
+        iN1.relieNoeuds(iN2, relSuiteMatrix1);
+        iN1.relieNoeuds(keanu, matrixActeur1);
+        iN1.relieNoeuds(fishburne, matrixActeur2);
+
+        iN2.relieNoeuds(cN1, relInstanceMatrix2);
+        iN2.relieNoeuds(attributTitreMatrix2, relAttributMatrix2titre);
+        iN2.relieNoeuds(attributDateSortieMatrix2, relAttributMatrix2date);
+        iN2.relieNoeuds(iN3, relSuiteMatrix2);
+        iN2.relieNoeuds(attributGenreMatrix2, relAttributMatrix2genre);
+        iN2.relieNoeuds(attribut2GenreMatrix2, relAttributMatrix2genre2);
+        iN2.relieNoeuds(fishburne, relMatrix2Acteur1);
+        iN2.relieNoeuds(keanu, relMatrix2Acteur2);
+
+        iN3.relieNoeuds(cN1, relInstanceMatrix3);
+        iN3.relieNoeuds(attributDateSortieMatrix3, relAttributMatrix3date);
+        iN3.relieNoeuds(attributTitreMatrix3, relAttributMatrix3titre);
+
+        fishburne.relieNoeuds(cN2, relActeurBurnes);
+        fishburne.relieNoeuds(iN1, relBurnesMatrix1);
+        fishburne.relieNoeuds(iN2, relBurnesMatrix2);
+        fishburne.relieNoeuds(attributRoleBurnes, relNomBurnes);
+        fishburne.relieNoeuds(attributAgeBurnes, relAgeBurnes);
+
         // ajouter les noeuds au graphe
         g.ajouterNoeud(cN1);
-        g.ajouterNoeud(instanceAlice);
-        g.ajouterNoeud(attributAge);
-        g.ajouterNoeud(attributNom);
-        g.ajouterNoeud(attributPronom);
+        g.ajouterNoeud(cN2);
+        g.ajouterNoeud(iN1);
+        g.ajouterNoeud(iN2);
+        g.ajouterNoeud(iN3);
+        g.ajouterNoeud(keanu);
+        g.ajouterNoeud(fishburne);
+        g.ajouterNoeud(attributAgeKeanu);
+        g.ajouterNoeud(attributRoleKeanu);
+        g.ajouterNoeud(attributAgeBurnes);
+        g.ajouterNoeud(attributRoleBurnes);
+        g.ajouterNoeud(attributDateSortieMatrix);
+        g.ajouterNoeud(attributTitreMatrix);
+        g.ajouterNoeud(attributGenreMatrix);
+        g.ajouterNoeud(attribut2GenreMatrix);
+        g.ajouterNoeud(attributGenreMatrix2);
+        g.ajouterNoeud(attribut2GenreMatrix2);
+        g.ajouterNoeud(attributDateSortieMatrix2);
+        g.ajouterNoeud(attributTitreMatrix2);
+        g.ajouterNoeud(attributDateSortieMatrix3);
+        g.ajouterNoeud(attributTitreMatrix3);
+
         g.afficheGraphe();
         System.setProperty("org.graphstream.ui", "swing");
         Graph graph = g.convertToVisualGraph();
@@ -381,13 +482,17 @@ public class Graphe {
      * @param nomRelation    le nom de la relation que vous souhaitez rechercher
      * @return Un graphique
      */
-    public Graphe rechercheLienNoeud(Noeud noeudRecherche, Relation relation) {
+    public Graphe rechercheLienNoeud(Noeud noeudRecherche, ArrayList<Relation> relations) {
         Graphe gRecherche = new Graphe();
         int cpt = 0;
         gRecherche.ajouterNoeud(noeudRecherche);
         for (Noeud n : noeudRecherche.getNoeudsRelie()) {
-            if (noeudRecherche.getRelations().get(cpt).equals(relation)) {
-                gRecherche.ajouterNoeud(n);
+            for (int i = 0; i < relations.size(); i++) {
+                if (noeudRecherche.getRelations().get(cpt).toString().equals(relations.get(i).toString())) {
+                    if (!gRecherche.estDansGraphe(n)) {
+                        gRecherche.ajouterNoeud(n);
+                    }
+                }
             }
             cpt++;
         }

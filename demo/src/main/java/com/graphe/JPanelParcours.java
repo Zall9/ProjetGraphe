@@ -11,6 +11,7 @@ import org.graphstream.graph.Graph;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,18 +20,15 @@ class JPanelParcours extends JPanel {
     private JComboBox<String> comboSelection;
     private JButton boutonRecherche;
     private JComboBox<Noeud> comboRecherche;
-    // private Graphe grapheLogique;
-    // private Graph grapheVisuel;
     private JPanel pan;
     private Map<String, Object> dicoDonnees;
-
     private JComboBox<Relation> comboRelation;
+    private Map<String, ArrayList<Relation>> listeRelations;
 
     JPanelParcours(Graphe grapheLogique, Graph grapheVisuel) {
         super();
         pan = new JPanel();
-        // this.grapheLogique = grapheLogique;
-        // this.grapheVisuel = grapheVisuel;
+        listeRelations = new HashMap<String, ArrayList<Relation>>();
         comboSelection = new JComboBox<String>();
         dicoDonnees = new HashMap<String, Object>();
         FlowLayout layout = new FlowLayout();
@@ -41,7 +39,6 @@ class JPanelParcours extends JPanel {
         for (String str : typeRecherche) {
             comboSelection.addItem(str);
         }
-        // comboRecherche = new JComboBox<Noeud>();
         boutonRecherche = new JButton("Chercher !");
         add(label);
         add(comboSelection);
@@ -128,12 +125,16 @@ class JPanelParcours extends JPanel {
                     AutoCompleteDecorator.decorate(comboRelation);
                     Noeud nSelectione = (Noeud) comboRecherche.getSelectedItem();
                     for (Relation r : nSelectione.getRelations()) {
-                        comboRelation.addItem(r);
+                        if (!listeRelations.containsKey(r.toString())) {
+                            comboRelation.addItem(r);
+                            listeRelations.put(r.toString(), new ArrayList<Relation>());
+                        }
+                        listeRelations.get(r.toString()).add(r);
                     }
                     comboRelation.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent arg0) {
-                            dicoDonnees.put("relation", comboRelation.getSelectedItem());
+                            dicoDonnees.put("relation", listeRelations.get(comboRelation.getSelectedItem().toString()));
                         }
                     });
                     comboRecherche.addActionListener(new ActionListener() {
@@ -145,14 +146,20 @@ class JPanelParcours extends JPanel {
                             AutoCompleteDecorator.decorate(comboRelation);
                             Noeud nSelectione = (Noeud) comboRecherche.getSelectedItem();
                             for (Relation r : nSelectione.getRelations()) {
-                                comboRelation.addItem(r);
+                                if (!listeRelations.containsKey(r.toString())) {
+                                    comboRelation.addItem(r);
+                                    listeRelations.put(r.toString(), new ArrayList<Relation>());
+                                }
+                                listeRelations.get(r.toString()).add(r);
                             }
                             comboRelation.addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    dicoDonnees.put("relation", comboRelation.getSelectedItem());
+                                    dicoDonnees.put("relation",
+                                            listeRelations.get(comboRelation.getSelectedItem().toString()));
                                 }
                             });
+
                             pan.add(comboRelation);
                             pan.revalidate();
                             pan.repaint();
