@@ -34,7 +34,7 @@ class JPanelParcours extends JPanel {
         FlowLayout layout = new FlowLayout();
         pan.setLayout(layout);
         typeRecherche = new String[] { "Instances d'un Concept", "Afficher le graphe principal",
-                "Noeuds selon relation" };
+                "Noeuds selon relation", "Parcours selon une relation" };
         JLabel label = new JLabel("Parcours : ");
         for (String str : typeRecherche) {
             comboSelection.addItem(str);
@@ -111,9 +111,14 @@ class JPanelParcours extends JPanel {
                 } else if (comboSelection.getSelectedItem().equals(typeRecherche[1])) {
                     dicoDonnees.put("typeRecherche", typeRecherche[1]);
 
-                } else if (comboSelection.getSelectedItem().equals(typeRecherche[2])) {
+                } else if (comboSelection.getSelectedItem().equals(typeRecherche[2])
+                        || comboSelection.getSelectedItem().equals(typeRecherche[3])) {
                     listeRelations.clear();
-                    dicoDonnees.put("typeRecherche", typeRecherche[2]);
+                    if (comboSelection.getSelectedItem().equals(typeRecherche[2])) {
+                        dicoDonnees.put("typeRecherche", typeRecherche[2]);
+                    } else {
+                        dicoDonnees.put("typeRecherche", typeRecherche[3]);
+                    }
                     comboRecherche = new JComboBox<Noeud>();
                     AutoCompleteDecorator.decorate(comboRecherche);
                     for (Noeud n : grapheLogique.getGraphe()) {

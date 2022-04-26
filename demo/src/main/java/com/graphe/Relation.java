@@ -1,5 +1,6 @@
 package com.graphe;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Relation {

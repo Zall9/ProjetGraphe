@@ -69,4 +69,12 @@ public class Noeud {
     public void setTypeNoeud(String typeNoeud) {
         this.typeNoeud = typeNoeud;
     }
+
+    public ArrayList<String> getRelationsNames() {
+        ArrayList<String> relationsNames = new ArrayList<String>();
+        for (Relation r : this.relations) {
+            relationsNames.add(r.getRelLabel());
+        }
+        return relationsNames;
+    }
 }

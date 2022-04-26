@@ -39,15 +39,6 @@ public class Graphe {
         }
     }
 
-    private void saisirInfo() {
-    }
-
-    private void sauvegarderGraphe() {
-    }
-
-    private void chargerGraphe() {
-    }
-
     /**
      * It returns the list of nodes of the graph
      * 
@@ -55,16 +46,6 @@ public class Graphe {
      */
     public List<Noeud> getGraphe() {
         return this.noeuds;
-    }
-
-    /**
-     * It returns a string
-     * 
-     * @param p1 the first node
-     * @param p2 the destination node
-     */
-    private String chemin(Noeud p1, Noeud p2) {
-        return "";
     }
 
     /**
@@ -216,10 +197,13 @@ public class Graphe {
 
         // -------------- Noeuds --------------
         ConceptNoeud cN1 = new ConceptNoeud(TypeConcept.ex, "Film");
+        ConceptNoeud cN3 = new ConceptNoeud(TypeConcept.ex, "Jeu-Video");
         ConceptNoeud cN2 = new ConceptNoeud(TypeConcept.foaf, "Acteur");
         InstanceNoeud iN1 = new InstanceNoeud("Matrix");
         InstanceNoeud iN2 = new InstanceNoeud("Matrix2");
         InstanceNoeud iN3 = new InstanceNoeud("Matrix3");
+        InstanceNoeud iN4 = new InstanceNoeud("The Matrix");
+
         InstanceNoeud keanu = new InstanceNoeud("Keanu Reeves");
         InstanceNoeud fishburne = new InstanceNoeud("Laurence Fishburne");
         AttributNoeud attributAgeKeanu = new AttributNoeud("57");
@@ -240,12 +224,17 @@ public class Graphe {
         AttributNoeud attributDateSortieMatrix3 = new AttributNoeud("2003");
         AttributNoeud attributTitreMatrix3 = new AttributNoeud("\"Matrix: Revolutions\"");
 
+        AttributNoeud attributDateSortieMatrixPS2 = new AttributNoeud("2001");
+        AttributNoeud attributTitreMatrixPS2 = new AttributNoeud("\"The Matrix\"");
+        AttributNoeud attributGenreMatrixPS2 = new AttributNoeud("Science-Fiction");
+        AttributNoeud attribut2GenreMatrixPS2 = new AttributNoeud("Action");
+
         // -------------- Relations --------------
 
         Relation relNomKeanu = new Relation(TypeRelation.foaf, "role", keanu, attributRoleKeanu);
         Relation relActeurKeanu = new Relation(TypeRelation.rdf, "type", keanu, cN2);
-        Relation relKeanuMatrix1 = new Relation(TypeRelation.dc, "acteur", keanu, iN1);
-        Relation relKeanuMatrix2 = new Relation(TypeRelation.dc, "acteur", keanu, iN2);
+        Relation relKeanuMatrix1 = new Relation(TypeRelation.dc, "Modele", keanu, iN1);
+        Relation relKeanuMatrix2 = new Relation(TypeRelation.dc, "Modele", keanu, iN2);
         Relation relAgeKeanu = new Relation(TypeRelation.foaf, "age", keanu, attributAgeKeanu);
 
         Relation relNomBurnes = new Relation(TypeRelation.foaf, "role", fishburne, attributRoleBurnes);
@@ -271,10 +260,20 @@ public class Graphe {
         Relation relAttributMatrix2genre2 = new Relation(TypeRelation.dc, "genre", iN2, attribut2GenreMatrix2);
         Relation relMatrix2Acteur1 = new Relation(TypeRelation.dc, "avec", iN2, fishburne);
         Relation relMatrix2Acteur2 = new Relation(TypeRelation.dc, "avec", iN2, keanu);
+        Relation relSuiteMatrix2PS2 = new Relation(TypeRelation.rdfs, "seeAlso", iN2, iN4);
 
         Relation relInstanceMatrix3 = new Relation(TypeRelation.rdf, "type", iN3, cN1);
         Relation relAttributMatrix3date = new Relation(TypeRelation.foaf, "dateSortie", iN3, attributDateSortieMatrix3);
         Relation relAttributMatrix3titre = new Relation(TypeRelation.foaf, "titre", iN3, attributTitreMatrix3);
+
+        Relation relMatrixPS2 = new Relation(TypeRelation.rdf, "type", iN4, cN3);
+        Relation relMatrixPS2Date = new Relation(TypeRelation.dc, "date", iN4, attributDateSortieMatrixPS2);
+        Relation relMatrixPS2Titre = new Relation(TypeRelation.dc, "titre", iN4, attributTitreMatrixPS2);
+        Relation relMatrixPS2Genre = new Relation(TypeRelation.dc, "genre", iN4, attributGenreMatrixPS2);
+        Relation relMatrixPS2Genre2 = new Relation(TypeRelation.dc, "genre", iN4, attribut2GenreMatrixPS2);
+        Relation relMatrixPS2Acteur1 = new Relation(TypeRelation.dc, "avec", iN4, fishburne);
+        Relation relMatrixPS2Acteur2 = new Relation(TypeRelation.dc, "avec", iN4, keanu);
+        Relation relMatrixPS2suite = new Relation(TypeRelation.dc, "seeAlso", iN4, iN1);
 
         // ajouter les relations au graphe
         keanu.relieNoeuds(iN1, relKeanuMatrix1);
@@ -300,10 +299,20 @@ public class Graphe {
         iN2.relieNoeuds(attribut2GenreMatrix2, relAttributMatrix2genre2);
         iN2.relieNoeuds(fishburne, relMatrix2Acteur1);
         iN2.relieNoeuds(keanu, relMatrix2Acteur2);
+        iN2.relieNoeuds(iN4, relSuiteMatrix2PS2);
 
         iN3.relieNoeuds(cN1, relInstanceMatrix3);
         iN3.relieNoeuds(attributDateSortieMatrix3, relAttributMatrix3date);
         iN3.relieNoeuds(attributTitreMatrix3, relAttributMatrix3titre);
+
+        iN4.relieNoeuds(cN3, relMatrixPS2);
+        iN4.relieNoeuds(attributDateSortieMatrixPS2, relMatrixPS2Date);
+        iN4.relieNoeuds(attributTitreMatrixPS2, relMatrixPS2Titre);
+        iN4.relieNoeuds(attributGenreMatrixPS2, relMatrixPS2Genre);
+        iN4.relieNoeuds(attribut2GenreMatrixPS2, relMatrixPS2Genre2);
+        iN4.relieNoeuds(fishburne, relMatrixPS2Acteur1);
+        iN4.relieNoeuds(keanu, relMatrixPS2Acteur2);
+        iN4.relieNoeuds(iN1, relMatrixPS2suite);
 
         fishburne.relieNoeuds(cN2, relActeurBurnes);
         fishburne.relieNoeuds(iN1, relBurnesMatrix1);
@@ -314,9 +323,11 @@ public class Graphe {
         // ajouter les noeuds au graphe
         g.ajouterNoeud(cN1);
         g.ajouterNoeud(cN2);
+        g.ajouterNoeud(cN3);
         g.ajouterNoeud(iN1);
         g.ajouterNoeud(iN2);
         g.ajouterNoeud(iN3);
+        g.ajouterNoeud(iN4);
         g.ajouterNoeud(keanu);
         g.ajouterNoeud(fishburne);
         g.ajouterNoeud(attributAgeKeanu);
@@ -333,7 +344,10 @@ public class Graphe {
         g.ajouterNoeud(attributTitreMatrix2);
         g.ajouterNoeud(attributDateSortieMatrix3);
         g.ajouterNoeud(attributTitreMatrix3);
-
+        g.ajouterNoeud(attributDateSortieMatrixPS2);
+        g.ajouterNoeud(attributTitreMatrixPS2);
+        g.ajouterNoeud(attributGenreMatrixPS2);
+        g.ajouterNoeud(attribut2GenreMatrixPS2);
         g.afficheGraphe();
         System.setProperty("org.graphstream.ui", "swing");
         Graph graph = g.convertToVisualGraph();
@@ -436,8 +450,10 @@ public class Graphe {
 
         // TESTS
         System.out.println("-----------------TESTS---------------------");
-        Graphe g2 = g.rechercheInstancesDeConcept("foaf:Person", false);
-        System.out.println(g2);
+
+        Graphe g2 = g.rechercheTouteRelation("rdfs:seeAlso", iN1, new Graphe());
+        System.out.println("FINAL - >" + g2);
+
     }
 
     /**
@@ -500,6 +516,42 @@ public class Graphe {
         }
         return gRecherche;
     }
+
+    public Graphe rechercheTouteRelation(String nomRelation, Noeud noeudCourant, Graphe gRecherche) {
+        if (!gRecherche.estDansGraphe(noeudCourant)) {
+            gRecherche.ajouterNoeud(noeudCourant);
+            for (int i = 0; i < noeudCourant.getRelations().size(); i++) {
+                Relation rel = noeudCourant.getRelations().get(i);
+                if (rel.toString().equals(nomRelation)) {
+                    Graphe gIntermediaire = rechercheTouteRelation(nomRelation, rel.getNoeudArrive(), gRecherche);
+                    gRecherche.concatGraphe(gIntermediaire);
+                }
+            }
+
+        }
+        // System.out.println("je sors de la fct");
+        return gRecherche;
+    }
+
+    public void concatGraphe(Graphe g) {
+
+        for (int i = 0; i < g.getGraphe().size(); i++) {
+            Noeud noeud = g.getGraphe().get(i);
+            if (!estDansGraphe(noeud)) {
+                ajouterNoeud(noeud);
+            }
+        }
+    }
+    // public Graphe concatGraphe(Graphe g) {
+    // Graphe res = this;
+    // for (int i = 0; i < g.getGraphe().size(); i++) {
+    // Noeud noeud = g.getGraphe().get(i);
+    // if (!res.estDansGraphe(noeud)) {
+    // res.ajouterNoeud(noeud);
+    // }
+    // }
+    // return res;
+    // }
 
     /**
      * renvoie la relation entre deux nœuds

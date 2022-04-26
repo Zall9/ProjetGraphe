@@ -34,7 +34,13 @@ public class RechercheActionListener implements ActionListener {
             ArrayList<Relation> relations = (ArrayList<Relation>) dicoDonnees.get("relation");
             Graphe grapheRecherche = grapheLogique.rechercheLienNoeud(noeudRecherche, relations);
             grapheRecherche.updateVisualGraph(grapheVisuel, relations);
+        } else if (dicoDonnees.get("typeRecherche").equals("Parcours selon une relation")) {
+            Noeud noeudRecherche = (Noeud) dicoDonnees.get("noeudRecherche");
+            ArrayList<Relation> relations = (ArrayList<Relation>) dicoDonnees.get("relation");
+            Graphe grapheRecherche = grapheLogique.rechercheTouteRelation(relations.get(0).toString(), noeudRecherche,
+                    new Graphe());
+            grapheRecherche.updateVisualGraph(grapheVisuel);
         }
-    }
 
+    }
 }
