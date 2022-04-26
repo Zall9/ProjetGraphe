@@ -41,6 +41,5 @@ public class RechercheActionListener implements ActionListener {
                     new Graphe());
             grapheRecherche.updateVisualGraph(grapheVisuel);
         }
-
     }
 }

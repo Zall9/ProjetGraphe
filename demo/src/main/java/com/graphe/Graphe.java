@@ -3,7 +3,6 @@ package com.graphe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 
@@ -22,7 +21,6 @@ import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swing_viewer.DefaultView;
 import org.graphstream.ui.swing_viewer.SwingViewer;
-import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -179,12 +177,6 @@ public class Graphe {
                 }
                 cpt++;
             }
-        }
-    }
-
-    public void comboBoxitemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-            String selectedItem = (String) e.getItem();
         }
     }
 

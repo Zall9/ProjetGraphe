@@ -161,7 +161,7 @@ class JPanelParcours extends JPanel {
                             int cpt = 0;
                             for (Relation r : nSelectione.getRelations()) {
                                 if (cpt == 0) {
-                                    ArrayList arrayList = new ArrayList();
+                                    ArrayList<Relation> arrayList = new ArrayList<Relation>();
                                     arrayList.add(r);
                                     dicoDonnees.put("relation", arrayList);
                                 }
