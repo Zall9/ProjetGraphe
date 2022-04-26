@@ -112,6 +112,7 @@ class JPanelParcours extends JPanel {
                     dicoDonnees.put("typeRecherche", typeRecherche[1]);
 
                 } else if (comboSelection.getSelectedItem().equals(typeRecherche[2])) {
+                    listeRelations.clear();
                     dicoDonnees.put("typeRecherche", typeRecherche[2]);
                     comboRecherche = new JComboBox<Noeud>();
                     AutoCompleteDecorator.decorate(comboRecherche);
@@ -124,12 +125,19 @@ class JPanelParcours extends JPanel {
                     comboRelation = new JComboBox<Relation>();
                     AutoCompleteDecorator.decorate(comboRelation);
                     Noeud nSelectione = (Noeud) comboRecherche.getSelectedItem();
+                    int cpt = 0;
                     for (Relation r : nSelectione.getRelations()) {
+                        if (cpt == 0) {
+                            ArrayList arrayList = new ArrayList();
+                            arrayList.add(r);
+                            dicoDonnees.put("relation", arrayList);
+                        }
                         if (!listeRelations.containsKey(r.toString())) {
                             comboRelation.addItem(r);
                             listeRelations.put(r.toString(), new ArrayList<Relation>());
                         }
                         listeRelations.get(r.toString()).add(r);
+                        cpt++;
                     }
                     comboRelation.addActionListener(new ActionListener() {
                         @Override
@@ -145,12 +153,19 @@ class JPanelParcours extends JPanel {
                             comboRelation = new JComboBox<Relation>();
                             AutoCompleteDecorator.decorate(comboRelation);
                             Noeud nSelectione = (Noeud) comboRecherche.getSelectedItem();
+                            int cpt = 0;
                             for (Relation r : nSelectione.getRelations()) {
+                                if (cpt == 0) {
+                                    ArrayList arrayList = new ArrayList();
+                                    arrayList.add(r);
+                                    dicoDonnees.put("relation", arrayList);
+                                }
                                 if (!listeRelations.containsKey(r.toString())) {
                                     comboRelation.addItem(r);
                                     listeRelations.put(r.toString(), new ArrayList<Relation>());
                                 }
                                 listeRelations.get(r.toString()).add(r);
+                                cpt++;
                             }
                             comboRelation.addActionListener(new ActionListener() {
                                 @Override
@@ -164,6 +179,7 @@ class JPanelParcours extends JPanel {
                             pan.revalidate();
                             pan.repaint();
                             pan.setMaximumSize(pan.getPreferredSize());
+                            ;
                         }
                     });
                     pan.add(comboRecherche);

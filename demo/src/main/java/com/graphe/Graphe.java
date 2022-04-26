@@ -357,7 +357,7 @@ public class Graphe {
         JButton boutonCreerRelation = new JButton("Creer la relation entre les deux noeuds");
         boutonCreerRelation.setAlignmentX(Component.CENTER_ALIGNMENT);
         JPanelRelation panelRelation = new JPanelRelation(g, graph, boutonCreerRelation);
-        JButton bouton2 = new JButton("Sauvegarder");
+        JButton bouton2 = new JButton("Afficher graphe complet");
         bouton2.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton bouton3 = new JButton("Charger");
         bouton3.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -381,9 +381,11 @@ public class Graphe {
             }
         });
         bouton2.addActionListener(new ActionListener() {
+            Graphe gl = g;
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Ici !");
+                gl.updateVisualGraph(graph);
             }
         });
         bouton3.addActionListener(new ActionListener() {
