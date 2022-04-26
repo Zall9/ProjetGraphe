@@ -23,7 +23,6 @@ import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swing_viewer.DefaultView;
 import org.graphstream.ui.swing_viewer.SwingViewer;
-import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
