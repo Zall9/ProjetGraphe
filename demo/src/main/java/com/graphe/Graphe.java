@@ -12,6 +12,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -415,21 +416,24 @@ public class Graphe {
         // Ajout des boutons au panel principal
         combo.setMaximumSize(combo.getPreferredSize());
         // ajout noeuds
+        
         panel.add(labelAjoutNoeud);
         panel.add(combo);
         panelChoixCreerNoeudConteneur.setMaximumSize(panelChoixCreerNoeudConteneur.getPreferredSize());
         panel.add(panelChoixCreerNoeudConteneur);
         panel.add(boutonCreerNoeud);
+        panel.add(new JSeparator());
         // relations
         panel.add(labelAjoutRelation);
         panel.add(panelRelation);
         panel.add(boutonCreerRelation);
-
+        panel.add(new JSeparator());
         // Parcours
         panel.add(panelParcours);
-
+        panel.add(new JSeparator());
         // Bouttons
         panel.add(bouton2);
+        
         panel.add(bouton3);
         panel.add(bouton4);
         // Création de la fenetre et ajout des composants:
